@@ -157,6 +157,7 @@ public class main {
 
     // Método que cria a transposta de uma matriz
     public static double[][] criarTransposta(double[][] matriz) {
+        //vale mais a pena tranferir como parametro, inves de fazer isto outra vez
         int linhas = matriz.length;
         int colunas = matriz[0].length;
 
