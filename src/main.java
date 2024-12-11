@@ -142,4 +142,17 @@ public class main {
 
         return diagonalMatrix;
     }
+    public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matriz, int k) {
+        EigenDecomposition decomposition = new EigenDecomposition(matriz);
+        double[] eigenvectors = decomposition.getRealEigenvalues();
+        Double[] sortedEigenvectors = Arrays.stream(eigenvectors)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .toArray(Double[]::new);
+        double[][] MatrizColuna = new double[k][1];
+        for (int i = 0; i < k; i++) {
+            MatrizColuna[i][0] = sortedEigenvectors[i];
+        }return MatrizColuna;
+
+    }
 }
