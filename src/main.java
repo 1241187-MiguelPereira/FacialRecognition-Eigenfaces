@@ -28,20 +28,39 @@ public class main {
 
     // Method to read a matrix from a CSV file
     public static double[][] lerMatriz(String filePath) {
-        double[][] matriz = new double[8][8];
+        double[][] matriz = null;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // First pass: Count rows and columns
+            int rows = 0;
+            int cols = 0;
             String line;
-            int row = 0;
 
-            while ((line = br.readLine()) != null && row < 8) {
-                line = line.trim(); // Remove extra whitespace
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
                 if (!line.isEmpty()) {
-                    String[] values = line.split(",");
-                    for (int col = 0; col < 8; col++) {
-                        matriz[row][col] = Integer.parseInt(values[col].trim());
+                    rows++;
+                    if (cols == 0) {
+                        cols = line.split(",").length; // Determine number of columns from first line
                     }
-                    row++;
+                }
+            }
+
+            // Initialize the matrix with the correct size
+            matriz = new double[rows][cols];
+
+            // Second pass: Fill the matrix
+            try (BufferedReader br2 = new BufferedReader(new FileReader(filePath))) {
+                int row = 0;
+                while ((line = br2.readLine()) != null) {
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        String[] values = line.split(",");
+                        for (int col = 0; col < cols; col++) {
+                            matriz[row][col] = Double.parseDouble(values[col].trim());
+                        }
+                        row++;
+                    }
                 }
             }
         } catch (IOException | NumberFormatException e) {
@@ -56,11 +75,12 @@ public class main {
     public static void imprimirMatriz(double[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+                System.out.printf("%8.2f ", matrix[i][j]); // Formata cada elemento com largura fixa de 8 e 2 casas decimais
             }
-            System.out.println();
+            System.out.println(); // Quebra de linha após cada linha da matriz
         }
     }
+
 
     public static boolean isSymmetric ( double[][] matrix, int rows, int cols){
 
