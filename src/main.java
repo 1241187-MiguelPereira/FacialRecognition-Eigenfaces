@@ -1,6 +1,10 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import org.apache.commons.math3.linear.*;
+import java.util.Arrays;
+import java.util.Comparator;
+
 
 public class main {
     public static void main(String[] args) {
@@ -80,4 +84,31 @@ public class main {
 
         return true; // É simétrica
     }
+
+    public static double[][] getEigenvalueDiagonal(double[][] matrix,int k){
+        RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
+        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
+        // Ordenar os valores próprios em ordem decrescente
+        Double[] sortedEigenvalues = Arrays.stream(eigenvalues)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .toArray(Double[]::new);
+
+        // Verificar se k é válido
+        if (k <= 0 || k > sortedEigenvalues.length) {
+            System.err.println("Número inválido de valores próprios solicitado.");
+            return null;
+        }
+
+        // Selecionar os k maiores valores próprios
+        double[][] diagonalMatrix = new double[k][k];
+        for (int i = 0; i < k; i++) {
+            diagonalMatrix[i][i] = sortedEigenvalues[i];
+        }
+
+        return diagonalMatrix;
+
+    }
+
 }
