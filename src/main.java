@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class main {
     public static void main(String[] args) {
@@ -110,5 +111,34 @@ public class main {
 
         double maxEigenvalue = Arrays.stream(eigenvalues).max().getAsDouble();
         System.out.println("O maior valor próprio é: " + maxEigenvalue);
+    }
+    public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
+        // Verificar se a matriz é quadrada
+        if (matrix.length != matrix[0].length) {
+            System.err.println("A matriz fornecida não é quadrada.");
+            return null;
+        }
+
+        // Criar uma matriz RealMatrix a partir do array bidimensional
+        RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
+
+        // Calcular os valores próprios usando EigenDecomposition
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
+        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
+
+        // Ordenar os valores próprios em ordem decrescente
+        Double[] sortedEigenvalues = Arrays.stream(eigenvalues)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .toArray(Double[]::new);
+        
+
+        // Selecionar os k maiores valores próprios
+        double[][] diagonalMatrix = new double[k][k];
+        for (int i = 0; i < k; i++) {
+            diagonalMatrix[i][i] = sortedEigenvalues[i];
+        }
+
+        return diagonalMatrix;
     }
 }
