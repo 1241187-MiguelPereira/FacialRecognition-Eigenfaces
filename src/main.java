@@ -12,6 +12,8 @@ public class main {
 
         double[][] matriz = lerMatriz(filePath);
 
+        double[][] transposta = criarTransposta(matriz);
+
         if (matriz != null) {
             Boolean simetrica = isSymmetric(matriz, matriz.length, matriz[0].length);
             imprimirMatriz(matriz);
@@ -19,6 +21,8 @@ public class main {
 
             verificarValoresProprios(matriz);
         }
+
+        imprimirMatriz(transposta);
     }
 
     public static double[][] lerMatriz(String filePath) {
@@ -149,5 +153,20 @@ public class main {
             MatrizColuna[i][0] = sortedEigenvectors[i];
         }return MatrizColuna;
 
+    }
+
+    // Método que cria a transposta de uma matriz
+    public static double[][] criarTransposta(double[][] matriz) {
+        int linhas = matriz.length;
+        int colunas = matriz[0].length;
+
+        // Cria uma nova matriz com dimensões invertidas
+        double[][] transposta = new double[colunas][linhas];
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                transposta[j][i] = matriz[i][j];
+            }
+        }
+        return transposta;
     }
 }
