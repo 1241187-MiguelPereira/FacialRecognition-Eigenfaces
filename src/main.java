@@ -23,7 +23,7 @@ public class main {
 
     public static double[][] lerMatriz(String filePath) {
         double[][] matriz = null;
-
+        //mudar o buffered para Reader
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // First pass: Count rows and columns
             int rows = 0;
@@ -66,6 +66,7 @@ public class main {
     }
 
     // Method to print a matrix
+    //Acho que nao precisamos deste metodo
     public static void imprimirMatriz(double[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -90,7 +91,7 @@ public class main {
 
         return true;
     }
-
+    //este método não é suposto fazer isto
     public static void verificarValoresProprios(double[][] matriz) {
         RealMatrix matrix = MatrixUtils.createRealMatrix(matriz);
 
