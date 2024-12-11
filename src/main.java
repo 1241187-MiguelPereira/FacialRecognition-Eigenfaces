@@ -114,11 +114,6 @@ public class main {
         System.out.println("O maior valor próprio é: " + maxEigenvalue);
     }
     public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
-        // Verificar se a matriz é quadrada
-        if (matrix.length != matrix[0].length) {
-            System.err.println("A matriz fornecida não é quadrada.");
-            return null;
-        }
 
         // Criar uma matriz RealMatrix a partir do array bidimensional
         RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
