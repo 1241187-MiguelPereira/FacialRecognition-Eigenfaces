@@ -198,4 +198,21 @@ public class main {
 
         return transposta;
     }
+    public static double calcularErroAbsolutoMedio(double[][] matriz, double[][] approximatedMatrix, int k) {
+        if (matriz.length != approximatedMatrix.length || matriz[0].length != approximatedMatrix[0].length) {
+            throw new IllegalArgumentException("As matrizes devem ter as mesmas dimensões.");
+        }
+
+        int rows = matriz.length;
+        int cols = matriz[0].length;
+        double errorSum = 0.0;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                errorSum += Math.abs(matriz[i][j] - reconstruirMatriz(matriz,k));
+            }
+        }
+
+        return errorSum / (rows * cols);
+    }
 }
