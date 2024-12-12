@@ -12,23 +12,23 @@ public class main {
 
         double[][] matriz = lerMatriz(filePath);
 
-        double[][] transposta = criarTransposta(matriz);
-
         if (matriz != null) {
-            Boolean simetrica = isSymmetric(matriz, matriz.length, matriz[0].length);
+            boolean simetrica = isSymmetric(matriz, matriz.length, matriz[0].length);
             imprimirMatriz(matriz);
-            System.out.println("simetrica = " + simetrica);
+            System.out.println("Simétrica = " + simetrica);
 
+            if (simetrica) {
+                int k = verificarValoresProprios(matriz[0].length, 3); // Escolhe os 3 maiores valores próprios
+                double[][] reconstruida = reconstruirMatriz(matriz, k);
+                System.out.println("Matriz reconstruída:");
+                imprimirMatriz(reconstruida);
+            }
         }
-
-        imprimirMatriz(transposta);
     }
 
     public static double[][] lerMatriz(String filePath) {
         double[][] matriz = null;
-        //mudar o buffered para Reader
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            // First pass: Count rows and columns
             int rows = 0;
             int cols = 0;
             String line;
@@ -38,15 +38,13 @@ public class main {
                 if (!line.isEmpty()) {
                     rows++;
                     if (cols == 0) {
-                        cols = line.split(",").length; // Determine number of columns from first line
+                        cols = line.split(",").length;
                     }
                 }
             }
 
-            // Initialize the matrix with the correct size
             matriz = new double[rows][cols];
 
-            // Second pass: Fill the matrix
             try (BufferedReader br2 = new BufferedReader(new FileReader(filePath))) {
                 int row = 0;
                 while ((line = br2.readLine()) != null) {
@@ -62,20 +60,18 @@ public class main {
             }
         } catch (IOException | NumberFormatException e) {
             System.err.println("Error reading the file: " + e.getMessage());
-            return null; // Return null in case of an error
+            return null;
         }
 
         return matriz;
     }
 
-    // Method to print a matrix
-    //Acho que nao precisamos deste metodo
     public static void imprimirMatriz(double[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.printf("%8.2f ", matrix[i][j]); // Formata cada elemento com largura fixa de 8 e 2 casas decimais
+        for (double[] row : matrix) {
+            for (double value : row) {
+                System.out.printf("%8.2f ", value);
             }
-            System.out.println(); // Quebra de linha após cada linha da matriz
+            System.out.println();
         }
     }
 
@@ -96,65 +92,70 @@ public class main {
     }
 
     public static int verificarValoresProprios(int cols, int k) {
-        if(k >= cols || k <= 0){
+        if (k > cols || k <= 0) {
             k = cols;
         }
         return k;
     }
-    public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
 
-        // Criar uma matriz RealMatrix a partir do array bidimensional
-        RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
+    public static double[][] multiplicarMatrizes(double[][] A, double[][] B) {
+        int linhasA = A.length;
+        int colunasA = A[0].length;
+        int colunasB = B[0].length;
 
-        // Calcular os valores próprios usando EigenDecomposition
-        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
-        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
+        double[][] resultado = new double[linhasA][colunasB];
 
-        // Ordenar os valores próprios em ordem decrescente
-        Double[] sortedEigenvalues = Arrays.stream(eigenvalues)
-                .boxed()
-                .sorted(Comparator.reverseOrder())
-                .toArray(Double[]::new);
-        
-
-        // Selecionar os k maiores valores próprios
-        double[][] diagonalMatrix = new double[k][k];
-        for (int i = 0; i < k; i++) {
-            diagonalMatrix[i][i] = sortedEigenvalues[i];
+        for (int i = 0; i < linhasA; i++) {
+            for (int j = 0; j < colunasB; j++) {
+                for (int k = 0; k < colunasA; k++) {
+                    resultado[i][j] += A[i][k] * B[k][j];
+                }
+            }
         }
 
-        return diagonalMatrix;
+        return resultado;
     }
-    public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matriz, int k) {
-        EigenDecomposition decomposition = new EigenDecomposition(matriz);
-        double[] eigenvectors = decomposition.getRealEigenvalues();
-        Double[] sortedEigenvectors = Arrays.stream(eigenvectors)
-                .boxed()
-                .sorted(Comparator.reverseOrder())
-                .toArray(Double[]::new);
-        double[][] MatrizColuna = new double[k][1];
+
+    public static double[][] reconstruirMatriz(double[][] matriz, int k) {
+        RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
+
+        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
+        Double[] sortedIndices = new Double[eigenvalues.length];
+        for (int i = 0; i < eigenvalues.length; i++) {
+            sortedIndices[i] = (double) i;
+        }
+
+        Arrays.sort(sortedIndices, Comparator.comparingDouble((Double i) -> -eigenvalues[i.intValue()]));
+
+        double[][] Pk = new double[matriz.length][k];
+        double[][] Dk = new double[k][k];
+
         for (int i = 0; i < k; i++) {
-            MatrizColuna[i][0] = sortedEigenvectors[i];
-        }return MatrizColuna;
+            int index = sortedIndices[i].intValue();
+            Dk[i][i] = eigenvalues[index];
+            double[] eigenvector = eigenDecomposition.getEigenvector(index).toArray();
+            for (int j = 0; j < matriz.length; j++) {
+                Pk[j][i] = eigenvector[j];
+            }
+        }
 
+        double[][] PkT = criarTransposta(Pk);
+        double[][] temp = multiplicarMatrizes(Pk, Dk);
+        return multiplicarMatrizes(temp, PkT);
     }
 
-    // Método que cria a transposta de uma matriz
     public static double[][] criarTransposta(double[][] matriz) {
-        //vale mais a pena tranferir como parametro, inves de fazer isto outra vez
         int linhas = matriz.length;
         int colunas = matriz[0].length;
-
-        // Cria uma nova matriz com dimensões invertidas
         double[][] transposta = new double[colunas][linhas];
+
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
                 transposta[j][i] = matriz[i][j];
             }
         }
+
         return transposta;
     }
-
-
-
 }
