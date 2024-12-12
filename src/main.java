@@ -8,24 +8,31 @@ import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) {
-
         String filePath = "exampleInputFunc1.csv";
-
+        //ler a matriz do ficheiro
         double[][] matriz = lerMatriz(filePath);
         System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
         Scanner sc = new Scanner(System.in);
+        //ler o valor de eigenfaces
         int k=sc.nextInt();
+        //Estabelecer o indice
         int colunas=matriz[0].length;
         int linhas=matriz.length;
+        //Verificar se é simétrica, so prosseguindo se for simétrica
         while (!isSymmetric(matriz,colunas,linhas))
             System.out.println("A matriz inserida é inválida");
-
+        //atualizar o k
         k=verificarValoresProprios(colunas,k);
+        //estabelecer a matriz dos vetores
         double[][] matrizP=MatrizColunaDosVetoresProprios(matriz,k);
+        //estabelecer a matriz dos valores
         double[][] matrizD=getEigenvalueDiagonal(matriz,k);
-                double[][] reconstruida = reconstruirMatriz(matriz, k);
-                System.out.println("Matriz reconstruída:");
-                imprimirMatriz(reconstruida);
+        //estabelecer a matriz coluna dos vetores transposta
+        double[][] matrizTransposta=criarTransposta(matrizP);
+        //estabelecer a matriz reconstruida
+        double[][] reconstruida = reconstruirMatriz(matrizP,matrizD,matrizTransposta);
+        System.out.println("Matriz reconstruída:");
+        imprimirMatriz(reconstruida);
             }
 
 
@@ -121,32 +128,8 @@ public class main {
     }
 
     public static double[][] reconstruirMatriz(double[][] matriz, int k) {
-        RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
-        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
 
-        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
-        Double[] sortedIndices = new Double[eigenvalues.length];
-        for (int i = 0; i < eigenvalues.length; i++) {
-            sortedIndices[i] = (double) i;
-        }
 
-        Arrays.sort(sortedIndices, Comparator.comparingDouble((Double i) -> -eigenvalues[i.intValue()]));
-
-        double[][] Pk = new double[matriz.length][k];
-        double[][] Dk = new double[k][k];
-
-        for (int i = 0; i < k; i++) {
-            int index = sortedIndices[i].intValue();
-            Dk[i][i] = eigenvalues[index];
-            double[] eigenvector = eigenDecomposition.getEigenvector(index).toArray();
-            for (int j = 0; j < matriz.length; j++) {
-                Pk[j][i] = eigenvector[j];
-            }
-        }
-
-        double[][] PkT = criarTransposta(Pk);
-        double[][] temp = multiplicarMatrizes(Pk, Dk);
-        return multiplicarMatrizes(temp, PkT);
     }
     public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matriz, int k) {
         EigenDecomposition decomposition = new EigenDecomposition(matriz);
