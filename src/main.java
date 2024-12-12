@@ -14,27 +14,28 @@ public class main {
         System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
         Scanner sc = new Scanner(System.in);
         //ler o valor de eigenfaces
-        int k=sc.nextInt();
-        //Estabelecer o indice
-        int colunas=matriz[0].length;
-        int linhas=matriz.length;
+        int k = sc.nextInt();
+        //Estabelecer o indice da matriz
+        int colunas = matriz[0].length;
+        int linhas = matriz.length;
         //Verificar se é simétrica, so prosseguindo se for simétrica
-        while (!isSymmetric(matriz,colunas,linhas))
+        while (!isSymmetric(matriz, colunas, linhas))
             System.out.println("A matriz inserida é inválida");
         //atualizar o k
-        k=verificarValoresProprios(colunas,k);
+        k = verificarValoresProprios(colunas, k);
+        // criar realMatrix
+        RealMatrix matrizOriginal = new Array2DRowRealMatrix(matriz);
         //estabelecer a matriz dos vetores
-        double[][] matrizP=MatrizColunaDosVetoresProprios(matriz,k);
+        double[][] matrizP = MatrizColunaDosVetoresProprios(matrizOriginal, k);
         //estabelecer a matriz dos valores
-        double[][] matrizD=getEigenvalueDiagonal(matriz,k);
+        double[][] matrizD = getEigenvalueDiagonal(matrizOriginal, k);
         //estabelecer a matriz coluna dos vetores transposta
-        double[][] matrizTransposta=criarTransposta(matrizP);
+        double[][] matrizTransposta = criarTransposta(matrizP);
         //estabelecer a matriz reconstruida
-        double[][] reconstruida = reconstruirMatriz(matrizP,matrizD,matrizTransposta);
+        double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
         System.out.println("Matriz reconstruída:");
         imprimirMatriz(reconstruida);
-            }
-
+    }
 
 
     public static double[][] lerMatriz(String filePath) {
@@ -127,32 +128,51 @@ public class main {
         return resultado;
     }
 
-    public static double[][] reconstruirMatriz(double[][] matriz, int k) {
-
+    public static double[][] reconstruirMatriz(double[][] matrizP, double[][] matrizD, double[][] matrizTransposta) {
+            double [][] matrizPD= multiplicarMatrizes(matrizP, matrizD);
+            double [][] matrizReconstruida = multiplicarMatrizes(matrizPD, matrizTransposta);
+            return matrizReconstruida;
 
     }
-    public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matriz, int k) {
-        EigenDecomposition decomposition = new EigenDecomposition(matriz);
-        double[] eigenvectors = decomposition.getRealEigenvalues();
-        Double[] sortedEigenvectors = Arrays.stream(eigenvectors)
-                .boxed()
-                .sorted(Comparator.reverseOrder())
-                .toArray(Double[]::new);
-        double[][] MatrizColuna = new double[k][1];
-        for (int i = 0; i < k; i++) {
-            MatrizColuna[i][0] = sortedEigenvectors[i];
-        }return MatrizColuna;
-    }
-    public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
-        // Verificar se a matriz é quadrada
-        if (matrix.length != matrix[0].length) {
-            System.err.println("A matriz fornecida não é quadrada.");
-            return null;
+
+    public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matrizOriginal, int k) {
+        EigenDecomposition decomposition = new EigenDecomposition(matrizOriginal);
+        double[] eigenvalues = decomposition.getRealEigenvalues(); // Valores próprios
+        double[][] eigenvectors = decomposition.getV().getData();  // Vetores próprios (colunas da matriz P)
+
+        // Criar um array de índices para associar os valores próprios aos vetores próprios
+        int[] indices = new int[eigenvalues.length];
+        for (int i = 0; i < eigenvalues.length; i++) {
+            indices[i] = i;
         }
-        // Criar uma matriz RealMatrix a partir do array bidimensional
-        RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
+
+        // Ordenar os índices com base nos valores próprios (ordem decrescente)
+        for (int i = 0; i < eigenvalues.length - 1; i++) {
+            for (int j = i + 1; j < eigenvalues.length; j++) {
+                if (eigenvalues[indices[i]] < eigenvalues[indices[j]]) {
+                    int temp = indices[i];
+                    indices[i] = indices[j];
+                    indices[j] = temp;
+                }
+            }
+        }
+
+        // Construir a matriz coluna com os \(k\) maiores vetores próprios
+        double[][] matrizColuna = new double[eigenvectors.length][k];
+        for (int col = 0; col < k; col++) {
+            int index = indices[col]; // Índice do vetor próprio correspondente
+            for (int row = 0; row < eigenvectors.length; row++) {
+                matrizColuna[row][col] = eigenvectors[row][index];
+            }
+        }
+
+        return matrizColuna;
+    }
+
+
+    public static double[][] getEigenvalueDiagonal(RealMatrix matrizOriginal, int k) {
         // Calcular os valores próprios usando EigenDecomposition
-        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(matrizOriginal);
         double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
         // Ordenar os valores próprios em ordem decrescente
         Double[] sortedEigenvalues = Arrays.stream(eigenvalues)
@@ -181,18 +201,16 @@ public class main {
 
         return transposta;
     }
-    public static double calcularErroAbsolutoMedio(double[][] matriz, double[][] approximatedMatrix, int k) {
-        if (matriz.length != approximatedMatrix.length || matriz[0].length != approximatedMatrix[0].length) {
-            throw new IllegalArgumentException("As matrizes devem ter as mesmas dimensões.");
-        }
+
+    public static double calcularErroAbsolutoMedio(double[][] matriz, double[][] matrizReconstruida,int colunas,int linhas ) {
         double errorSum = 0.0;
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                errorSum += Math.abs(matriz[i][j] - reconstruida);
+        for (int i = 0; i < linhas  ; i++) {
+            for (int j = 0; j < colunas; j++) {
+                errorSum += Math.abs(matriz[i][j] - matrizReconstruida[i][j]);
             }
         }
 
-        return errorSum / (rows * cols);
+        return errorSum / (linhas * colunas);
     }
 }
