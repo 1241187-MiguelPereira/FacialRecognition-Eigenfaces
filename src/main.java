@@ -1,4 +1,5 @@
 import org.apache.commons.math3.linear.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,6 +36,13 @@ public class main {
         double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
         System.out.println("Matriz reconstruída:");
         imprimirMatriz(reconstruida);
+        System.out.println("Número de valores utilizados: " + k);
+        System.out.println("Matriz dos vetores:");
+        imprimirMatriz(matrizP);
+        System.out.println("Matriz dos valores:");
+        imprimirMatriz(matrizD);
+        double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
+        System.out.print("Erro Absoluto Médio: " + ErroMedio);
     }
 
 
@@ -129,9 +137,9 @@ public class main {
     }
 
     public static double[][] reconstruirMatriz(double[][] matrizP, double[][] matrizD, double[][] matrizTransposta) {
-            double [][] matrizPD= multiplicarMatrizes(matrizP, matrizD);
-            double [][] matrizReconstruida = multiplicarMatrizes(matrizPD, matrizTransposta);
-            return matrizReconstruida;
+        double[][] matrizPD = multiplicarMatrizes(matrizP, matrizD);
+        double[][] matrizReconstruida = multiplicarMatrizes(matrizPD, matrizTransposta);
+        return matrizReconstruida;
 
     }
 
@@ -202,10 +210,10 @@ public class main {
         return transposta;
     }
 
-    public static double calcularErroAbsolutoMedio(double[][] matriz, double[][] matrizReconstruida,int colunas,int linhas ) {
+    public static double calcularErroAbsolutoMedio(double[][] matriz, double[][] matrizReconstruida, int colunas, int linhas) {
         double errorSum = 0.0;
 
-        for (int i = 0; i < linhas  ; i++) {
+        for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {
                 errorSum += Math.abs(matriz[i][j] - matrizReconstruida[i][j]);
             }
