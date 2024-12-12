@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) {
@@ -11,20 +12,23 @@ public class main {
         String filePath = "exampleInputFunc1.csv";
 
         double[][] matriz = lerMatriz(filePath);
+        System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
+        Scanner sc = new Scanner(System.in);
+        int k=sc.nextInt();
+        int colunas=matriz[0].length;
+        int linhas=matriz.length;
+        while (!isSymmetric(matriz,colunas,linhas))
+            System.out.println("A matriz inserida é inválida");
 
-        if (matriz != null) {
-            boolean simetrica = isSymmetric(matriz, matriz.length, matriz[0].length);
-            imprimirMatriz(matriz);
-            System.out.println("Simétrica = " + simetrica);
-
-            if (simetrica) {
-                int k = verificarValoresProprios(matriz[0].length, 3); // Escolhe os 3 maiores valores próprios
+        k=verificarValoresProprios(colunas,k);
+        double[][] matrizP=MatrizColunaDosVetoresProprios(matriz,k);
+        double[][] matrizD=getEigenvalueDiagonal(matriz,k);
                 double[][] reconstruida = reconstruirMatriz(matriz, k);
                 System.out.println("Matriz reconstruída:");
                 imprimirMatriz(reconstruida);
             }
-        }
-    }
+
+
 
     public static double[][] lerMatriz(String filePath) {
         double[][] matriz = null;
@@ -143,6 +147,42 @@ public class main {
         double[][] PkT = criarTransposta(Pk);
         double[][] temp = multiplicarMatrizes(Pk, Dk);
         return multiplicarMatrizes(temp, PkT);
+    }
+    public static double[][] MatrizColunaDosVetoresProprios(RealMatrix matriz, int k) {
+        EigenDecomposition decomposition = new EigenDecomposition(matriz);
+        double[] eigenvectors = decomposition.getRealEigenvalues();
+        Double[] sortedEigenvectors = Arrays.stream(eigenvectors)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .toArray(Double[]::new);
+        double[][] MatrizColuna = new double[k][1];
+        for (int i = 0; i < k; i++) {
+            MatrizColuna[i][0] = sortedEigenvectors[i];
+        }return MatrizColuna;
+    }
+    public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
+        // Verificar se a matriz é quadrada
+        if (matrix.length != matrix[0].length) {
+            System.err.println("A matriz fornecida não é quadrada.");
+            return null;
+        }
+        // Criar uma matriz RealMatrix a partir do array bidimensional
+        RealMatrix realMatrix = new Array2DRowRealMatrix(matrix);
+        // Calcular os valores próprios usando EigenDecomposition
+        EigenDecomposition eigenDecomposition = new EigenDecomposition(realMatrix);
+        double[] eigenvalues = eigenDecomposition.getRealEigenvalues();
+        // Ordenar os valores próprios em ordem decrescente
+        Double[] sortedEigenvalues = Arrays.stream(eigenvalues)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .toArray(Double[]::new);
+
+        // Selecionar os k maiores valores próprios
+        double[][] diagonalMatrix = new double[k][k];
+        for (int i = 0; i < k; i++) {
+            diagonalMatrix[i][i] = sortedEigenvalues[i];
+        }
+        return diagonalMatrix;
     }
 
     public static double[][] criarTransposta(double[][] matriz) {
