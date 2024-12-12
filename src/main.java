@@ -19,7 +19,6 @@ public class main {
             imprimirMatriz(matriz);
             System.out.println("simetrica = " + simetrica);
 
-            verificarValoresProprios(matriz);
         }
 
         imprimirMatriz(transposta);
@@ -95,27 +94,12 @@ public class main {
 
         return true;
     }
-    //este método não é suposto fazer isto
-    public static void verificarValoresProprios(double[][] matriz) {
-        RealMatrix matrix = MatrixUtils.createRealMatrix(matriz);
 
-        EigenDecomposition decomposition = new EigenDecomposition(matrix);
-        double[] eigenvalues = decomposition.getRealEigenvalues();
-
-        System.out.println("Valores próprios:");
-        for (double eigenvalue : eigenvalues) {
-            System.out.println(eigenvalue);
-            if (eigenvalue > 0) {
-                System.out.println("Este valor próprio é maior que 0.");
-            } else if (eigenvalue == 0) {
-                System.out.println("Este valor próprio é igual a 0.");
-            } else {
-                System.out.println("Este valor próprio é menor que 0.");
-            }
+    public static int verificarValoresProprios(int cols, int k) {
+        if(k >= cols || k <= 0){
+            k = cols;
         }
-
-        double maxEigenvalue = Arrays.stream(eigenvalues).max().getAsDouble();
-        System.out.println("O maior valor próprio é: " + maxEigenvalue);
+        return k;
     }
     public static double[][] getEigenvalueDiagonal(double[][] matrix, int k) {
 
@@ -170,4 +154,7 @@ public class main {
         }
         return transposta;
     }
+
+
+
 }
