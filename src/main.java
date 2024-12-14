@@ -1,6 +1,7 @@
 import org.apache.commons.math3.linear.*;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -43,6 +44,7 @@ public class main {
         imprimirMatriz(matrizD);
         double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
         System.out.print("Erro Absoluto Médio: " + ErroMedio);
+        exportarMatriz(reconstruida);
     }
 
 
@@ -221,4 +223,29 @@ public class main {
 
         return errorSum / (linhas * colunas);
     }
+
+
+    public static void exportarMatriz(double[][] matriz) {
+            // Nome do arquivo CSV
+        String nomeArquivo = "matrizReconstruida.csv";
+
+            // Escrever a matriz no arquivo CSV
+        try (FileWriter writer = new FileWriter(nomeArquivo)) {
+            for (int i = 0; i < matriz.length; i++) {
+                for (int j = 0; j < matriz[i].length; j++) {
+                    writer.append(String.valueOf(matriz[i][j])); // envia o valor absoluto como double (34.231241213)
+                    if (j < matriz[i].length - 1) {
+                        writer.append(","); // Adiciona a vírgula entre os valores
+                    }
+                }
+                writer.append("\n"); // Nova linha após cada linha da matriz
+            }
+            System.out.println("\nMatriz exportada com sucesso para o arquivo: " + nomeArquivo);
+        } catch (IOException e) {
+            System.err.println("\nErro ao escrever o arquivo CSV: " + e.getMessage());
+        }
+    }
+
+
+
 }
