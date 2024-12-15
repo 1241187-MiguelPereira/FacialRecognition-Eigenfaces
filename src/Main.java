@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         String filePath = "exampleInputFunc1.csv";
         //ler a matriz do ficheiro
