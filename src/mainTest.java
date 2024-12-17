@@ -97,6 +97,15 @@ public class mainTest {
         }
         return true;
     }
-
+public static double[][] CálculoDoDesvio(double [] vetorColuna,double[][] matrizA){
+        int linhas=matrizA.length;
+        int colunas=matrizA[0].length;
+        double[][] desvio = new double[linhas][colunas];
+        for (int j = 0; j < colunas; j++) {
+            for (int i = 0; i < linhas; i++) {
+                desvio[i][j]=matrizA[i][j]-vetorColuna[j];
+            }
+        }return desvio;
+}
 }
 
