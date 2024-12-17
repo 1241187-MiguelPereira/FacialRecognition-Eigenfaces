@@ -1,5 +1,4 @@
 import org.apache.commons.math3.linear.*;
-
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -320,6 +319,52 @@ public class Main {
 
         return matrizCovariancias;
     }
+    //Metodo para criar um csv com eigenfaces normalizadas
+    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo){
+        // Criar a matriz RealMatrix a partir da matriz original
+        RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
+
+        // Obter a matriz coluna dos vetores próprios (Eigenfaces)
+        double[][] eigenfaces = Main.MatrizColunaDosVetoresProprios(realMatrix, k);
+
+        // Normalizar as Eigenfaces
+        double[][] eigenfacesNormalizadas = Main.normalizeEigenfaces(eigenfaces);
+
+        // Exportar para um arquivo CSV
+        try (FileWriter writer = new FileWriter(nomeArquivo)) {
+            for (int i = 0; i < eigenfacesNormalizadas.length; i++) {
+                for (int j = 0; j < eigenfacesNormalizadas[i].length; j++) {
+                    writer.append(String.valueOf(eigenfacesNormalizadas[i][j]));
+                    if (j < eigenfacesNormalizadas[i].length - 1) {
+                        writer.append(",");
+                    }
+                }
+                writer.append("\n");
+            }
+            System.out.println("Eigenfaces exportadas com sucesso para o arquivo: " + nomeArquivo);
+        } catch (IOException e) {
+            System.err.println("Erro ao escrever o arquivo CSV: " + e.getMessage());
+        }
+    }
+    //Metodo para Calcular vetor com a média das imagens presentes na matriz
+    public static double[] calcularVetorMedia(double[][] matriz) {
+        int linhas = matriz.length;    // Número de linhas (imagens)
+        int colunas = matriz[0].length; // Número de colunas (pixels ou características)
+
+        double[] vetorMedia = new double[colunas]; // Vetor para armazenar a média de cada coluna
+
+        // Iterar sobre cada coluna para calcular a média
+        for (int j = 0; j < colunas; j++) {
+            double soma = 0.0;
+            for (int i = 0; i < linhas; i++) {
+                soma += matriz[i][j]; // Somar os valores da coluna
+            }
+            vetorMedia[j] = soma / linhas; // Calcular a média da coluna
+        }
+
+        return vetorMedia;
+    }
+
 
 
 
