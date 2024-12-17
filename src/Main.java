@@ -278,6 +278,30 @@ public class Main {
         }return desvio;
     }
 
+    public static double[][] normalizeEigenfaces(double[][] eigenvectors) {
+        int rows = eigenvectors.length;      // Número de linhas (dimensão dos vetores)
+        int cols = eigenvectors[0].length;   // Número de vetores próprios (colunas)
+
+        double[][] normalizedEigenvectors = new double[rows][cols];
+
+        // Iterar sobre cada vetor próprio (coluna)
+        for (int j = 0; j < cols; j++) {
+            double norm = 0.0;
+
+            // 1. Calcular a norma L2 do vetor próprio (coluna j)
+            for (int i = 0; i < rows; i++) {
+                norm += eigenvectors[i][j] * eigenvectors[i][j]; // Soma dos quadrados dos elementos
+            }
+            norm = Math.sqrt(norm); // Raiz quadrada para obter a norma
+
+            // 2. Normalizar o vetor próprio (dividir cada elemento pela norma)
+            for (int i = 0; i < rows; i++) {
+                normalizedEigenvectors[i][j] = eigenvectors[i][j] / norm;
+            }
+        }
+        return normalizedEigenvectors;
+    }
+
 
 
 }
