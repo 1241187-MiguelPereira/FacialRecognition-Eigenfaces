@@ -10,11 +10,15 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.print("|Bem vindo ao programa de reconstrução de imagens entre outros|");
+        System.out.println("Insira a funcionalidade que quer utilizar");
+        Scanner sc = new Scanner(System.in);
+        int funcionalidade;
+        funcionalidade = sc.nextInt();
         String filePath = "exampleInputFunc1.csv";
         //ler a matriz do ficheiro
         double[][] matriz = lerMatriz(filePath);
         System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
-        Scanner sc = new Scanner(System.in);
         //ler o valor de eigenfaces
         int k = sc.nextInt();
         //Estabelecer o indice da matriz
@@ -45,6 +49,7 @@ public class Main {
         double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
         System.out.print("Erro Absoluto Médio: " + ErroMedio);
         exportarMatriz(reconstruida);
+
     }
 
 
@@ -226,10 +231,10 @@ public class Main {
 
 
     public static void exportarMatriz(double[][] matriz) {
-            // Nome do arquivo CSV
+        // Nome do arquivo CSV
         String nomeArquivo = "matrizReconstruida.csv";
 
-            // Escrever a matriz no arquivo CSV
+        // Escrever a matriz no arquivo CSV
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
             for (int i = 0; i < matriz.length; i++) {
                 for (int j = 0; j < matriz[i].length; j++) {
@@ -245,6 +250,24 @@ public class Main {
             System.err.println("\nErro ao escrever o arquivo CSV: " + e.getMessage());
         }
     }
+
+    public static double[] VetorColunaMedias(double[][] matrizA) {
+        int linhas = matrizA.length; // Número de linhas
+        int colunas = matrizA[0].length; // Número de colunas
+
+        double[] vetorColuna = new double[colunas]; // Vetor para armazenar as médias de cada coluna
+
+        // Loop para calcular a soma de cada coluna
+        for (int j = 0; j < colunas; j++) {
+            double soma = 0; // Resetar a soma para cada coluna
+            for (int i = 0; i < linhas; i++) {
+                soma += matrizA[i][j]; // Somar os valores da coluna atual
+            }
+            vetorColuna[j] = soma / linhas; // Calcular a média da coluna
+        }
+        return vetorColuna;
+    }
+
 
 
 
