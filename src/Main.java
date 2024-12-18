@@ -371,7 +371,7 @@ public class Main {
         return vetorMedia;
     }
 
-    //Conversão matriz de imagem para vetor
+//Conversão matriz de imagem para vetor
 
     public static double[] converterMatrizParaVetor(double[][] matriz) {
         int linhas = matriz.length;
