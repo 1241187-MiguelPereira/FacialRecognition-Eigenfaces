@@ -52,7 +52,7 @@ public class Main {
         System.out.println("Matriz dos valores:");
         imprimirMatriz(matrizD);
         double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
-        System.out.print("Erro Absoluto Médio: " + ErroMedio);
+        System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
         exportarMatriz(reconstruida);
 
     }
