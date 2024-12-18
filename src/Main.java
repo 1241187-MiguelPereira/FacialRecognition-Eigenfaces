@@ -389,7 +389,41 @@ public class Main {
         return vetor;
     }
 
+    //Construção Matriz M
 
+    public static double[][] construirMatrizDeImagens(String pasta) {
+        File folder = new File(pasta);
+        File[] arquivos = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
+
+        if (arquivos == null || arquivos.length == 0) {
+            System.out.println("Nenhuma imagem encontrada na pasta: " + pasta);
+            return null;
+        }
+
+        List<double[]> listaDeVetores = new ArrayList<>();
+
+        // Ler cada arquivo e transformar em vetor
+        for (File arquivo : arquivos) {
+            System.out.println("Lendo imagem: " + arquivo.getName());
+            double[][] matriz = lerMatriz(arquivo.getAbsolutePath());
+            double[] vetor = converterMatrizParaVetor(matriz);
+            listaDeVetores.add(vetor);
+        }
+
+        // Construir matriz M (cada coluna é uma imagem)
+        int linhas = listaDeVetores.get(0).length;
+        int colunas = listaDeVetores.size();
+        double[][] matrizM = new double[linhas][colunas];
+
+        for (int j = 0; j < colunas; j++) {
+            double[] vetor = listaDeVetores.get(j);
+            for (int i = 0; i < linhas; i++) {
+                matrizM[i][j] = vetor[i];
+            }
+        }
+
+        return matrizM;
+    }
 
 
 }
