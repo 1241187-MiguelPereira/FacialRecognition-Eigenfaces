@@ -14,49 +14,119 @@ import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.print("|Bem vindo ao programa de reconstrução de imagens entre outros|");
-        System.out.println("Insira a funcionalidade que quer utilizar");
-        Scanner sc = new Scanner(System.in);
-        int funcionalidade;
-        funcionalidade = sc.nextInt();
-        String filePath = "exampleInputFunc1.csv";
-        String pastaImagens = "baseImagens";
-        //ler a matriz do ficheiro
-        double[][] matriz = lerMatriz(filePath);
-        System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
-        //ler o valor de eigenfaces
-        int k = sc.nextInt();
-        //Estabelecer o indice da matriz
-        int colunas = matriz[0].length;
-        int linhas = matriz.length;
-        //Verificar se é simétrica, so prosseguindo se for simétrica
-        while (!isSymmetric(matriz, colunas, linhas))
-            System.out.println("A matriz inserida é inválida");
-        //atualizar o k
-        k = verificarValoresProprios(colunas, k);
-        // criar realMatrix
-        RealMatrix matrizOriginal = new Array2DRowRealMatrix(matriz);
-        //estabelecer a matriz dos vetores
-        double[][] matrizP = MatrizColunaDosVetoresProprios(matrizOriginal, k);
-        //estabelecer a matriz dos valores
-        double[][] matrizD = getEigenvalueDiagonal(matrizOriginal, k);
-        //estabelecer a matriz coluna dos vetores transposta
-        double[][] matrizTransposta = criarTransposta(matrizP);
-        //estabelecer a matriz reconstruida
-        double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
-        System.out.println("Matriz reconstruída:");
-        imprimirMatriz(reconstruida);
-        System.out.println("Número de valores utilizados: " + k);
-        System.out.println("Matriz dos vetores:");
-        imprimirMatriz(matrizP);
-        System.out.println("Matriz dos valores:");
-        imprimirMatriz(matrizD);
-        double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
-        System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
-        exportarMatriz(reconstruida);
-
+        executarMenu();
     }
 
+    public static void executarMenu() {
+        Scanner sc = new Scanner(System.in);
+        String escolha;
+
+        do {
+            // Exibir menu
+            mostrarMenu();
+
+            // Ler a escolha do usuário
+            System.out.println("Escolha uma opção:");
+            escolha = sc.nextLine().trim().toUpperCase();
+
+            // Processar escolha
+            switch (escolha) {
+                case "1":
+                    // Funcionalidade 1: Reconstrução de matriz
+                    String filePath = "exampleInputFunc1.csv";
+
+                    // Ler a matriz do ficheiro
+                    double[][] matriz = lerMatriz(filePath);
+                    if (matriz == null) {
+                        System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
+                        break;
+                    }
+
+                    System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
+                    int k = sc.nextInt();
+                    sc.nextLine(); // Consumir quebra de linha pendente
+
+                    // Estabelecer o índice da matriz
+                    int colunas = matriz[0].length;
+                    int linhas = matriz.length;
+
+                    // Verificar se é simétrica; prosseguir somente se for simétrica
+                    while (!isSymmetric(matriz, colunas, linhas)) {
+                        System.out.println("A matriz inserida é inválida. Tente novamente.");
+                        matriz = lerMatriz(filePath); // Solicitar novamente a matriz
+                    }
+
+                    // Atualizar o k
+                    k = verificarValoresProprios(colunas, k);
+
+                    // Criar RealMatrix
+                    RealMatrix matrizOriginal = new Array2DRowRealMatrix(matriz);
+
+                    // Estabelecer a matriz dos vetores
+                    double[][] matrizP = MatrizColunaDosVetoresProprios(matrizOriginal, k);
+
+                    // Estabelecer a matriz dos valores
+                    double[][] matrizD = getEigenvalueDiagonal(matrizOriginal, k);
+
+                    // Estabelecer a matriz coluna dos vetores transposta
+                    double[][] matrizTransposta = criarTransposta(matrizP);
+
+                    // Estabelecer a matriz reconstruída
+                    double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
+
+                    // Exibir resultados
+                    System.out.println("Matriz reconstruída:");
+                    imprimirMatriz(reconstruida);
+
+                    System.out.println("Número de valores utilizados: " + k);
+                    System.out.println("Matriz dos vetores:");
+                    imprimirMatriz(matrizP);
+                    System.out.println("Matriz dos valores:");
+                    imprimirMatriz(matrizD);
+
+                    double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
+                    System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
+
+                    // Exportar matriz reconstruída
+                    exportarMatriz(reconstruida);
+
+                    break;
+
+                case "2":
+                    // Funcionalidade 2: Construção da matriz de imagens
+                    String pastaImagens = "baseImagens";
+                    double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
+
+                    if (matrizImagens != null) {
+                        System.out.println("Matriz de imagens construída com sucesso:");
+                        imprimirMatriz(matrizImagens);
+                    } else {
+                        System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+                    }
+                    break;
+
+                case "3":
+
+                    break;
+
+                case "END":
+                    System.out.println("Programa encerrado. Obrigado!");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida. Por favor, tente novamente.");
+                    break;
+            }
+        } while (!escolha.equals("END"));
+    }
+
+    public static void mostrarMenu() {
+    System.out.println("\n--- MENU ---");
+    System.out.println("1 - Reconstrução de Matriz");
+    System.out.println("2 - Construção da Matriz de Imagens");
+    System.out.println("3 - Exportação de Eigenfaces Normalizadas");
+    System.out.println("END - Encerrar o programa");
+    }
     public static double[][] lerMatriz(String filePath) {
         try {
             // First pass to determine matrix dimensions
