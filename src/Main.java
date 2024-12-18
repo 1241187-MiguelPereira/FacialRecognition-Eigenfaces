@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+import org.apache.commons.math3.linear.*;
+import java.io.*;
+import java.util.*;
 import java.io.FileNotFoundException;
 
 
@@ -18,6 +21,7 @@ public class Main {
         int funcionalidade;
         funcionalidade = sc.nextInt();
         String filePath = "exampleInputFunc1.csv";
+        String pastaImagens = "baseImagens";
         //ler a matriz do ficheiro
         double[][] matriz = lerMatriz(filePath);
         System.out.println("digite o número de valores próprios a utilizar na reconstrução da matriz");
@@ -367,7 +371,23 @@ public class Main {
         return vetorMedia;
     }
 
+    //Conversão matriz de imagem para vetor
 
+    public static double[] converterMatrizParaVetor(double[][] matriz) {
+        int linhas = matriz.length;
+        int colunas = matriz[0].length;
+
+        double[] vetor = new double[linhas * colunas];
+        int index = 0;
+
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                vetor[index++] = matriz[i][j];
+            }
+        }
+
+        return vetor;
+    }
 
 
 }
