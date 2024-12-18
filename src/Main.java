@@ -1,5 +1,4 @@
 import org.apache.commons.math3.linear.*;
-import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.File;
@@ -243,7 +242,7 @@ public class Main {
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
             for (int i = 0; i < matriz.length; i++) {
                 for (int j = 0; j < matriz[i].length; j++) {
-                    writer.append(String.valueOf(matriz[i][j])); // envia o valor absoluto como double (34.231241213)
+                    writer.append(String.format("%.2f", matriz[i][j]));// envia o valor com 2 casas decimais (34,23)
                     if (j < matriz[i].length - 1) {
                         writer.append(","); // Adiciona a vírgula entre os valores
                     }
