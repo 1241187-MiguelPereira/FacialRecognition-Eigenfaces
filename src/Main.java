@@ -374,9 +374,15 @@ public class Main {
 //Conversão matriz de imagem para vetor
 
     public static double[] converterMatrizParaVetor(double[][] matriz) {
+        if (matriz == null || matriz.length == 0 || matriz[0].length == 0) {
+            System.out.println("Erro: Matriz inválida ou vazia.");
+            return null;
+        }
+
         int linhas = matriz.length;
         int colunas = matriz[0].length;
 
+        // Vetor de tamanho total das entradas da matriz (linhas * colunas)
         double[] vetor = new double[linhas * colunas];
         int index = 0;
 
@@ -388,6 +394,7 @@ public class Main {
 
         return vetor;
     }
+
 
     //Construção Matriz M
 
