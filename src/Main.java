@@ -2,10 +2,13 @@ import org.apache.commons.math3.linear.*;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -51,46 +54,45 @@ public class Main {
 
     }
 
-
     public static double[][] lerMatriz(String filePath) {
-        double[][] matriz = null;
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            int rows = 0;
-            int cols = 0;
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
+        try {
+            // First pass to determine matrix dimensions
+            Scanner scanner = new Scanner(new File(filePath));
+            int rows = 0, cols = 0;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
                 if (!line.isEmpty()) {
                     rows++;
-                    if (cols == 0) {
-                        cols = line.split(",").length;
-                    }
+                    if (cols == 0) cols = line.split(",").length; // Get column count from first valid line
                 }
             }
+            scanner.close();
 
-            matriz = new double[rows][cols];
+            // Initialize the matrix
+            double[][] matriz = new double[rows][cols];
 
-            try (BufferedReader br2 = new BufferedReader(new FileReader(filePath))) {
-                int row = 0;
-                while ((line = br2.readLine()) != null) {
-                    line = line.trim();
-                    if (!line.isEmpty()) {
-                        String[] values = line.split(",");
-                        for (int col = 0; col < cols; col++) {
-                            matriz[row][col] = Double.parseDouble(values[col].trim());
-                        }
-                        row++;
+            // Second pass to populate the matrix
+            scanner = new Scanner(new File(filePath));
+            int row = 0;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (!line.isEmpty()) {
+                    String[] values = line.split(",");
+                    for (int col = 0; col < cols; col++) {
+                        matriz[row][col] = Double.parseDouble(values[col].trim());
                     }
+                    row++;
                 }
             }
-        } catch (IOException | NumberFormatException e) {
-            System.err.println("Error reading the file: " + e.getMessage());
+            scanner.close();
+
+            return matriz;
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not found.");
             return null;
         }
-
-        return matriz;
     }
+
 
     public static void imprimirMatriz(double[][] matrix) {
         for (double[] row : matrix) {
