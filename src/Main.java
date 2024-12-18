@@ -373,7 +373,7 @@ public class Main {
         }
         return normalizedEigenvectors;
     }
-    public static double[][] MatrizdasCovariancias(double[][] matrizDosDesvios, double imagens) {
+    public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios, double imagens) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
 
@@ -382,13 +382,6 @@ public class Main {
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
         double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios,MatrizTransformada);
-
-        // Dividir cada elemento da matriz resultante pelo número de imagens
-        for (int i = 0; i < matrizCovariancias.length; i++) {
-            for (int j = 0; j < matrizCovariancias[i].length; j++) {
-                matrizCovariancias[i][j] /= imagens;
-            }
-        }
 
         return matrizCovariancias;
     }
