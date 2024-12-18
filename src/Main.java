@@ -401,17 +401,33 @@ public class Main {
         }
 
         List<double[]> listaDeVetores = new ArrayList<>();
+        int tamanhoDoVetor = -1;
 
         // Ler cada arquivo e transformar em vetor
         for (File arquivo : arquivos) {
             System.out.println("Lendo imagem: " + arquivo.getName());
             double[][] matriz = lerMatriz(arquivo.getAbsolutePath());
+
+            if (matriz == null) {
+                System.out.println("Erro ao ler a matriz do arquivo: " + arquivo.getName());
+                continue;
+            }
+
             double[] vetor = converterMatrizParaVetor(matriz);
+
+            // Verificar consistência das dimensões
+            if (tamanhoDoVetor == -1) {
+                tamanhoDoVetor = vetor.length;
+            } else if (vetor.length != tamanhoDoVetor) {
+                System.out.println("Erro: Imagem " + arquivo.getName() + " tem dimensões diferentes.");
+                return null;
+            }
+
             listaDeVetores.add(vetor);
         }
 
         // Construir matriz M (cada coluna é uma imagem)
-        int linhas = listaDeVetores.get(0).length;
+        int linhas = tamanhoDoVetor; // Cada vetor corresponde a uma coluna
         int colunas = listaDeVetores.size();
         double[][] matrizM = new double[linhas][colunas];
 
@@ -424,6 +440,7 @@ public class Main {
 
         return matrizM;
     }
+
 
 
 }
