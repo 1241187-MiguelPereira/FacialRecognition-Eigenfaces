@@ -14,10 +14,6 @@ import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) {
-        executarMenu();
-    }
-
-    public static void executarMenu() {
         Scanner sc = new Scanner(System.in);
         String escolha;
 
@@ -119,6 +115,8 @@ public class Main {
             }
         } while (!escolha.equals("END"));
     }
+
+
 
     public static void mostrarMenu() {
     System.out.println("\n--- MENU ---");
