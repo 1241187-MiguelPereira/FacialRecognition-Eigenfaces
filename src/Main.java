@@ -314,7 +314,7 @@ public class Main {
         double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(MatrizTransformada, matrizDosDesvios);
+        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios,MatrizTransformada);
 
         // Dividir cada elemento da matriz resultante pelo número de imagens
         for (int i = 0; i < matrizCovariancias.length; i++) {
