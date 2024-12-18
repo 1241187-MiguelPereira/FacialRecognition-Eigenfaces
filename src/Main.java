@@ -476,17 +476,19 @@ public class Main {
             return null;
         }
 
-        List<double[]> listaDeVetores = new ArrayList<>();
+        // Criar um array para armazenar os vetores de imagens
+        int quantidadeDeImagens = arquivos.length;
+        double[][] matrizM = null;
         int tamanhoDoVetor = -1;
 
-        // Ler cada arquivo e transformar em vetor
-        for (File arquivo : arquivos) {
+        for (int i = 0; i < quantidadeDeImagens; i++) {
+            File arquivo = arquivos[i];
             System.out.println("Lendo imagem: " + arquivo.getName());
             double[][] matriz = lerMatriz(arquivo.getAbsolutePath());
 
             if (matriz == null) {
                 System.out.println("Erro ao ler a matriz do arquivo: " + arquivo.getName());
-                continue;
+                return null; // Retorna null se algum erro ocorrer
             }
 
             double[] vetor = converterMatrizParaVetor(matriz);
@@ -494,28 +496,21 @@ public class Main {
             // Verificar consistência das dimensões
             if (tamanhoDoVetor == -1) {
                 tamanhoDoVetor = vetor.length;
+                matrizM = new double[tamanhoDoVetor][quantidadeDeImagens]; // Inicializa matrizM com as dimensões corretas
             } else if (vetor.length != tamanhoDoVetor) {
                 System.out.println("Erro: Imagem " + arquivo.getName() + " tem dimensões diferentes.");
-                return null;
+                return null; // Retorna null se as dimensões forem inconsistentes
             }
 
-            listaDeVetores.add(vetor);
-        }
-
-        // Construir matriz M (cada coluna é uma imagem)
-        int linhas = tamanhoDoVetor; // Cada vetor corresponde a uma coluna
-        int colunas = listaDeVetores.size();
-        double[][] matrizM = new double[linhas][colunas];
-
-        for (int j = 0; j < colunas; j++) {
-            double[] vetor = listaDeVetores.get(j);
-            for (int i = 0; i < linhas; i++) {
-                matrizM[i][j] = vetor[i];
+            // Adicionar o vetor à matriz M
+            for (int j = 0; j < tamanhoDoVetor; j++) {
+                matrizM[j][i] = vetor[j];
             }
         }
 
         return matrizM;
     }
+
 
 
 
