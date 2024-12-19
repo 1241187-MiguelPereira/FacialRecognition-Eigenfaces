@@ -1,12 +1,17 @@
+import jdk.dynalink.beans.StaticClass;
 import org.apache.commons.math3.linear.*;
+
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+
 import org.apache.commons.math3.linear.*;
+
 import java.io.*;
 import java.util.*;
 import java.io.FileNotFoundException;
@@ -117,14 +122,14 @@ public class Main {
     }
 
 
-
     public static void mostrarMenu() {
-    System.out.println("\n--- MENU ---");
-    System.out.println("1 - Reconstrução de Matriz");
-    System.out.println("2 - Construção da Matriz de Imagens");
-    System.out.println("3 - Exportação de Eigenfaces Normalizadas");
-    System.out.println("END - Encerrar o programa");
+        System.out.println("\n--- MENU ---");
+        System.out.println("1 - Reconstrução de Matriz");
+        System.out.println("2 - Construção da Matriz de Imagens");
+        System.out.println("3 - Exportação de Eigenfaces Normalizadas");
+        System.out.println("END - Encerrar o programa");
     }
+
     public static double[][] lerMatriz(String filePath) {
         try {
             // First pass to determine matrix dimensions
@@ -339,15 +344,17 @@ public class Main {
         }
         return vetorColuna;
     }
-    public static double[][] CálculoDoDesvio(double [] vetorColuna,double[][] matrizA){
-        int linhas=matrizA.length;
-        int colunas=matrizA[0].length;
+
+    public static double[][] CálculoDoDesvio(double[] vetorColuna, double[][] matrizA) {
+        int linhas = matrizA.length;
+        int colunas = matrizA[0].length;
         double[][] desvio = new double[linhas][colunas];
         for (int j = 0; j < colunas; j++) {
             for (int i = 0; i < linhas; i++) {
-                desvio[i][j]=matrizA[i][j]-vetorColuna[j];
+                desvio[i][j] = matrizA[i][j] - vetorColuna[j];
             }
-        }return desvio;
+        }
+        return desvio;
     }
 
     public static double[][] normalizeEigenfaces(double[][] eigenvectors) {
@@ -373,6 +380,7 @@ public class Main {
         }
         return normalizedEigenvectors;
     }
+
     public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios, double imagens) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
@@ -381,20 +389,21 @@ public class Main {
         double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios,MatrizTransformada);
+        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
 
         return matrizCovariancias;
     }
+
     //Metodo para criar um csv com eigenfaces normalizadas
-    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo){
+    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo) {
         // Criar a matriz RealMatrix a partir da matriz original
         RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
 
         // Obter a matriz coluna dos vetores próprios (Eigenfaces)
-        double[][] eigenfaces = Main.MatrizColunaDosVetoresProprios(realMatrix, k);
+        double[][] eigenfaces = MatrizColunaDosVetoresProprios(realMatrix, k);
 
         // Normalizar as Eigenfaces
-        double[][] eigenfacesNormalizadas = Main.normalizeEigenfaces(eigenfaces);
+        double[][] eigenfacesNormalizadas = normalizeEigenfaces(eigenfaces);
 
         // Exportar para um arquivo CSV
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
@@ -411,24 +420,6 @@ public class Main {
         } catch (IOException e) {
             System.err.println("Erro ao escrever o arquivo CSV: " + e.getMessage());
         }
-    }
-    //Metodo para Calcular vetor com a média das imagens presentes na matriz
-    public static double[] calcularVetorMedia(double[][] matriz) {
-        int linhas = matriz.length;    // Número de linhas (imagens)
-        int colunas = matriz[0].length; // Número de colunas (pixels ou características)
-
-        double[] vetorMedia = new double[colunas]; // Vetor para armazenar a média de cada coluna
-
-        // Iterar sobre cada coluna para calcular a média
-        for (int j = 0; j < colunas; j++) {
-            double soma = 0.0;
-            for (int i = 0; i < linhas; i++) {
-                soma += matriz[i][j]; // Somar os valores da coluna
-            }
-            vetorMedia[j] = soma / linhas; // Calcular a média da coluna
-        }
-
-        return vetorMedia;
     }
 
 //Conversão matriz de imagem para vetor
@@ -502,7 +493,5 @@ public class Main {
         return matrizM;
     }
 
-
-
-
+    public static
 }
