@@ -492,6 +492,11 @@ public class Main {
 
         return matrizM;
     }
+public static double [] CalcularPesos(double [][] desvio,double[] media){
+        double [] CalcularPesos= new double [desvio.length];
+        for (int i = 0; i < desvio.length; i++) {
+            CalcularPesos[i] = desvio[i][0]*media[i];
+        }return CalcularPesos;
+}
 
-    public static
 }
