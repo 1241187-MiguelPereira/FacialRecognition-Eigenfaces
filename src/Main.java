@@ -97,6 +97,7 @@ public class Main {
                     // Funcionalidade 2: Construção da matriz de imagens
                     String pastaImagens = "baseImagens";
                     double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
+                    int x = sc.nextInt();
 
                     if (matrizImagens != null) {
                         System.out.println("Matriz de imagens construída com sucesso:");
@@ -104,6 +105,14 @@ public class Main {
                     } else {
                         System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
                     }
+                    double[] vetorMedias = VetorColunaMedias(matrizImagens);
+                    double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
+                    double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
+                    RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+                    double [][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal,x);
+                    double [][] normalizados = normalizeEigenfaces(matrizVetores);
+
+
                     break;
 
                 case "3":
@@ -381,7 +390,7 @@ public class Main {
         return normalizedEigenvectors;
     }
 
-    public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios, double imagens) {
+    public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
 
@@ -492,11 +501,13 @@ public class Main {
 
         return matrizM;
     }
-public static double [] CalcularPesos(double [][] desvio,double[] media){
-        double [] CalcularPesos= new double [desvio.length];
+
+    public static double[] CalcularPesos(double[][] desvio, double[] media) {
+        double[] CalcularPesos = new double[desvio.length];
         for (int i = 0; i < desvio.length; i++) {
-            CalcularPesos[i] = desvio[i][0]*media[i];
-        }return CalcularPesos;
-}
+            CalcularPesos[i] = desvio[i][0] * media[i];
+        }
+        return CalcularPesos;
+    }
 
 }
