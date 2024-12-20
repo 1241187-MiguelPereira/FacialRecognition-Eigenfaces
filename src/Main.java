@@ -1,4 +1,5 @@
 import org.apache.commons.math3.linear.*;
+
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.File;
@@ -6,7 +7,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+
 import org.apache.commons.math3.linear.*;
+
 import java.io.*;
 import java.util.*;
 import java.io.FileNotFoundException;
@@ -51,13 +54,12 @@ public class Main {
     }
 
 
-
     public static void mostrarMenu() {
-    System.out.println("\n--- MENU ---");
-    System.out.println("1 - Reconstrução de Matriz");
-    System.out.println("2 - Construção da Matriz de Imagens");
-    System.out.println("3 - Exportação de Eigenfaces Normalizadas");
-    System.out.println("END - Encerrar o programa");
+        System.out.println("\n--- MENU ---");
+        System.out.println("1 - Reconstrução de Matriz");
+        System.out.println("2 - Construção da Matriz de Imagens");
+        System.out.println("3 - Exportação de Eigenfaces Normalizadas");
+        System.out.println("END - Encerrar o programa");
     }
 
     public static void funcionalidade1() {
@@ -139,10 +141,14 @@ public class Main {
         double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
         double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
         RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
-        double [][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal,x);
-        double [][] normalizados = normalizeEigenfaces(matrizVetores);
+        double[][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal, x);
+        double[][] matrizVetoresC= multiplicarMatrizes(matrizA, matrizVetores);
+        double[][] normalizados = normalizeEigenfaces(matrizVetoresC);
+        double[] mediaTransposta= transporMatrizColuna(vetorMedias);
+        double[] matrizpesos= CalcularPesos(matrizA,mediaTransposta);
+        double[] imagemReconstruída= reconstruirImagem(vetorMedias,normalizados,matrizpesos,x);
+        System.out.print(imagemReconstruída);
     }
-
 
 
     public static double[][] lerMatriz(String filePath) {
@@ -359,15 +365,17 @@ public class Main {
         }
         return vetorColuna;
     }
-    public static double[][] CálculoDoDesvio(double [] vetorColuna,double[][] matrizA){
-        int linhas=matrizA.length;
-        int colunas=matrizA[0].length;
+
+    public static double[][] CálculoDoDesvio(double[] vetorColuna, double[][] matrizA) {
+        int linhas = matrizA.length;
+        int colunas = matrizA[0].length;
         double[][] desvio = new double[linhas][colunas];
         for (int j = 0; j < colunas; j++) {
             for (int i = 0; i < linhas; i++) {
-                desvio[i][j]=matrizA[i][j]-vetorColuna[j];
+                desvio[i][j] = matrizA[i][j] - vetorColuna[j];
             }
-        }return desvio;
+        }
+        return desvio;
     }
 
     public static double[][] normalizeEigenfaces(double[][] eigenvectors) {
@@ -393,6 +401,7 @@ public class Main {
         }
         return normalizedEigenvectors;
     }
+
     public static double[][] MatrizdasCovariancias(double[][] matrizDosDesvios, double imagens) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
@@ -401,7 +410,7 @@ public class Main {
         double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios,MatrizTransformada);
+        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
 
         // Dividir cada elemento da matriz resultante pelo número de imagens
         for (int i = 0; i < matrizCovariancias.length; i++) {
@@ -412,8 +421,9 @@ public class Main {
 
         return matrizCovariancias;
     }
+
     //Metodo para criar um csv com eigenfaces normalizadas
-    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo){
+    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo) {
         // Criar a matriz RealMatrix a partir da matriz original
         RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
 
@@ -439,6 +449,7 @@ public class Main {
             System.err.println("Erro ao escrever o arquivo CSV: " + e.getMessage());
         }
     }
+
     //Metodo para Calcular vetor com a média das imagens presentes na matriz
     public static double[] calcularVetorMedia(double[][] matriz) {
         int linhas = matriz.length;    // Número de linhas (imagens)
@@ -542,22 +553,10 @@ public class Main {
         return matrizCovariancias;
     }
 
-    //Metodo para calcular Pesos
-    public static double[] CalcularPesos(double[][] desvio, double[][] eigenfaces) {
-        int k = eigenfaces[0].length; // Número de eigenfaces
-        double[] pesos = new double[k];
 
-        // Calcula cada peso como o produto interno entre a imagem (vetor de desvios) e a eigenface correspondente
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < desvio.length; j++) {
-                pesos[i] += desvio[j][0] * eigenfaces[j][i];
-            }
-        }
 
-        return pesos;
-    }
 
-    //Metodo para recconstruir a imagem utilizando k eigenfaces
+    //Metodo para reconstruir a imagem utilizando k eigenfaces
     public static double[] reconstruirImagem(double[] vetorMedia, double[][] eigenfaces, double[] pesos, int k) {
         int tamanho = vetorMedia.length;
         double[] imagemReconstruida = new double[tamanho];
@@ -576,8 +575,23 @@ public class Main {
 
         return imagemReconstruida;
     }
+    public static double[] transporMatrizColuna(double[] matrizColuna) {
+        int linhas = matrizColuna.length; // O número de elementos na coluna define o número de linhas
+        double[] matrizLinha = new double[linhas]; // Cria um vetor para representar a linha (transposta)
 
+        // Preenche a matriz linha com os valores da matriz coluna
+        for (int i = 0; i < linhas; i++) {
+            matrizLinha[i] = matrizColuna[i];
+        }
 
-
+        return matrizLinha;
+    }
+    public static double[] CalcularPesos(double[][] desvio, double[] media) {
+        double[] CalcularPesos = new double[desvio.length];
+        for (int i = 0; i < desvio.length; i++) {
+            CalcularPesos[i] = desvio[i][0] * media[i];
+        }
+        return CalcularPesos;
+    }
 
 }
