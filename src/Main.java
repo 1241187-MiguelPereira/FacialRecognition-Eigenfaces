@@ -542,6 +542,41 @@ public class Main {
         return matrizCovariancias;
     }
 
+    //Metodo para calcular Pesos
+    public static double[] CalcularPesos(double[][] desvio, double[][] eigenfaces) {
+        int k = eigenfaces[0].length; // Número de eigenfaces
+        double[] pesos = new double[k];
+
+        // Calcula cada peso como o produto interno entre a imagem (vetor de desvios) e a eigenface correspondente
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < desvio.length; j++) {
+                pesos[i] += desvio[j][0] * eigenfaces[j][i];
+            }
+        }
+
+        return pesos;
+    }
+
+    //Metodo para recconstruir a imagem utilizando k eigenfaces
+    public static double[] reconstruirImagem(double[] vetorMedia, double[][] eigenfaces, double[] pesos, int k) {
+        int tamanho = vetorMedia.length;
+        double[] imagemReconstruida = new double[tamanho];
+
+        // Inicializa a imagem reconstruída com o vetor média
+        for (int i = 0; i < tamanho; i++) {
+            imagemReconstruida[i] = vetorMedia[i];
+        }
+
+        // Adiciona a contribuição de cada eigenface ponderada pelos pesos
+        for (int i = 0; i < k; i++) {
+            for (int j = 0; j < tamanho; j++) {
+                imagemReconstruida[j] += pesos[i] * eigenfaces[j][i];
+            }
+        }
+
+        return imagemReconstruida;
+    }
+
 
 
 
