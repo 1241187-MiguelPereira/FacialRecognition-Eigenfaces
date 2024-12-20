@@ -32,7 +32,7 @@ public class Main {
                     break;
 
                 case "2":
-                    // Funcionalidade 2: Construção da matriz de imagens
+                    funcionalidade2(); // Funcionalidade 2: Construção da matriz de imagens
                     break;
 
                 case "3":
@@ -121,6 +121,29 @@ public class Main {
         // Exportar matriz reconstruída
         exportarMatriz(reconstruida);
     }
+
+    public static void funcionalidade2() {
+        String pastaImagens = "baseImagens";
+        double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
+        Scanner sc = new Scanner(System.in);
+
+        int x = sc.nextInt();
+
+        if (matrizImagens != null) {
+            System.out.println("Matriz de imagens construída com sucesso:");
+            imprimirMatriz(matrizImagens);
+        } else {
+            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+        }
+        double[] vetorMedias = VetorColunaMedias(matrizImagens);
+        double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
+        double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
+        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+        double [][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal,x);
+        double [][] normalizados = normalizeEigenfaces(matrizVetores);
+    }
+
+
 
     public static double[][] lerMatriz(String filePath) {
         try {
@@ -504,6 +527,19 @@ public class Main {
         }
 
         return matrizM;
+    }
+
+    public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios) {
+        int linhas = matrizDosDesvios.length;
+        int colunas = matrizDosDesvios[0].length;
+
+        // Criar a matriz transposta
+        double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
+
+        // Multiplicar a matriz transposta pela matriz original dos desvios
+        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
+
+        return matrizCovariancias;
     }
 
 
