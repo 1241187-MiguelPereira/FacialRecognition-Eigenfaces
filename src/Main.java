@@ -1,17 +1,12 @@
-import jdk.dynalink.beans.StaticClass;
 import org.apache.commons.math3.linear.*;
-
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
-import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
-
 import org.apache.commons.math3.linear.*;
-
 import java.io.*;
 import java.util.*;
 import java.io.FileNotFoundException;
@@ -33,86 +28,11 @@ public class Main {
             // Processar escolha
             switch (escolha) {
                 case "1":
-                    // Funcionalidade 1: Reconstrução de matriz
-                    String filePath = "exampleInputFunc1.csv";
-
-                    // Ler a matriz do ficheiro
-                    double[][] matriz = lerMatriz(filePath);
-                    if (matriz == null) {
-                        System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
-                        break;
-                    }
-
-                    System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
-                    int k = sc.nextInt();
-                    sc.nextLine(); // Consumir quebra de linha pendente
-
-                    // Estabelecer o índice da matriz
-                    int colunas = matriz[0].length;
-                    int linhas = matriz.length;
-
-                    // Verificar se é simétrica; prosseguir somente se for simétrica
-                    while (!isSymmetric(matriz, colunas, linhas)) {
-                        System.out.println("A matriz inserida é inválida. Tente novamente.");
-                        matriz = lerMatriz(filePath); // Solicitar novamente a matriz
-                    }
-
-                    // Atualizar o k
-                    k = verificarValoresProprios(colunas, k);
-
-                    // Criar RealMatrix
-                    RealMatrix matrizOriginal = new Array2DRowRealMatrix(matriz);
-
-                    // Estabelecer a matriz dos vetores
-                    double[][] matrizP = MatrizColunaDosVetoresProprios(matrizOriginal, k);
-
-                    // Estabelecer a matriz dos valores
-                    double[][] matrizD = getEigenvalueDiagonal(matrizOriginal, k);
-
-                    // Estabelecer a matriz coluna dos vetores transposta
-                    double[][] matrizTransposta = criarTransposta(matrizP);
-
-                    // Estabelecer a matriz reconstruída
-                    double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
-
-                    // Exibir resultados
-                    System.out.println("Matriz reconstruída:");
-                    imprimirMatriz(reconstruida);
-
-                    System.out.println("Número de valores utilizados: " + k);
-                    System.out.println("Matriz dos vetores:");
-                    imprimirMatriz(matrizP);
-                    System.out.println("Matriz dos valores:");
-                    imprimirMatriz(matrizD);
-
-                    double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
-                    System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
-
-                    // Exportar matriz reconstruída
-                    exportarMatriz(reconstruida);
-
+                    funcionalidade1(); // Funcionalidade 1: Reconstrução de matriz
                     break;
 
                 case "2":
                     // Funcionalidade 2: Construção da matriz de imagens
-                    String pastaImagens = "baseImagens";
-                    double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
-                    int x = sc.nextInt();
-
-                    if (matrizImagens != null) {
-                        System.out.println("Matriz de imagens construída com sucesso:");
-                        imprimirMatriz(matrizImagens);
-                    } else {
-                        System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
-                    }
-                    double[] vetorMedias = VetorColunaMedias(matrizImagens);
-                    double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
-                    double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
-                    RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
-                    double [][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal,x);
-                    double [][] normalizados = normalizeEigenfaces(matrizVetores);
-
-
                     break;
 
                 case "3":
@@ -131,12 +51,75 @@ public class Main {
     }
 
 
+
     public static void mostrarMenu() {
-        System.out.println("\n--- MENU ---");
-        System.out.println("1 - Reconstrução de Matriz");
-        System.out.println("2 - Construção da Matriz de Imagens");
-        System.out.println("3 - Exportação de Eigenfaces Normalizadas");
-        System.out.println("END - Encerrar o programa");
+    System.out.println("\n--- MENU ---");
+    System.out.println("1 - Reconstrução de Matriz");
+    System.out.println("2 - Construção da Matriz de Imagens");
+    System.out.println("3 - Exportação de Eigenfaces Normalizadas");
+    System.out.println("END - Encerrar o programa");
+    }
+
+    public static void funcionalidade1() {
+        String filePath = "exampleInputFunc1.csv";
+
+        Scanner sc = new Scanner(System.in);
+
+
+        // Ler a matriz do ficheiro
+        double[][] matriz = lerMatriz(filePath);
+        if (matriz == null) {
+            System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
+
+        }
+
+        System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
+        int k = sc.nextInt();
+        sc.nextLine(); // Consumir quebra de linha pendente
+
+        // Estabelecer o índice da matriz
+        int colunas = matriz[0].length;
+        int linhas = matriz.length;
+
+        // Verificar se é simétrica; prosseguir somente se for simétrica
+        while (!isSymmetric(matriz, colunas, linhas)) {
+            System.out.println("A matriz inserida é inválida. Tente novamente.");
+            matriz = lerMatriz(filePath); // Solicitar novamente a matriz
+        }
+
+        // Atualizar o k
+        k = verificarValoresProprios(colunas, k);
+
+        // Criar RealMatrix
+        RealMatrix matrizOriginal = new Array2DRowRealMatrix(matriz);
+
+        // Estabelecer a matriz dos vetores
+        double[][] matrizP = MatrizColunaDosVetoresProprios(matrizOriginal, k);
+
+        // Estabelecer a matriz dos valores
+        double[][] matrizD = getEigenvalueDiagonal(matrizOriginal, k);
+
+        // Estabelecer a matriz coluna dos vetores transposta
+        double[][] matrizTransposta = criarTransposta(matrizP);
+
+        // Estabelecer a matriz reconstruída
+        double[][] reconstruida = reconstruirMatriz(matrizP, matrizD, matrizTransposta);
+
+        // Exibir resultados
+        System.out.println("Matriz reconstruída:");
+        imprimirMatriz(reconstruida);
+
+        System.out.println("Número de valores utilizados: " + k);
+        System.out.println("Matriz dos vetores:");
+        imprimirMatriz(matrizP);
+        System.out.println("Matriz dos valores:");
+        imprimirMatriz(matrizD);
+
+        double ErroMedio = calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
+        System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
+
+        // Exportar matriz reconstruída
+        exportarMatriz(reconstruida);
     }
 
     public static double[][] lerMatriz(String filePath) {
@@ -353,17 +336,15 @@ public class Main {
         }
         return vetorColuna;
     }
-
-    public static double[][] CálculoDoDesvio(double[] vetorColuna, double[][] matrizA) {
-        int linhas = matrizA.length;
-        int colunas = matrizA[0].length;
+    public static double[][] CálculoDoDesvio(double [] vetorColuna,double[][] matrizA){
+        int linhas=matrizA.length;
+        int colunas=matrizA[0].length;
         double[][] desvio = new double[linhas][colunas];
         for (int j = 0; j < colunas; j++) {
             for (int i = 0; i < linhas; i++) {
-                desvio[i][j] = matrizA[i][j] - vetorColuna[j];
+                desvio[i][j]=matrizA[i][j]-vetorColuna[j];
             }
-        }
-        return desvio;
+        }return desvio;
     }
 
     public static double[][] normalizeEigenfaces(double[][] eigenvectors) {
@@ -389,8 +370,7 @@ public class Main {
         }
         return normalizedEigenvectors;
     }
-
-    public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios) {
+    public static double[][] MatrizdasCovariancias(double[][] matrizDosDesvios, double imagens) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
 
@@ -398,21 +378,27 @@ public class Main {
         double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
+        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios,MatrizTransformada);
+
+        // Dividir cada elemento da matriz resultante pelo número de imagens
+        for (int i = 0; i < matrizCovariancias.length; i++) {
+            for (int j = 0; j < matrizCovariancias[i].length; j++) {
+                matrizCovariancias[i][j] /= imagens;
+            }
+        }
 
         return matrizCovariancias;
     }
-
     //Metodo para criar um csv com eigenfaces normalizadas
-    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo) {
+    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo){
         // Criar a matriz RealMatrix a partir da matriz original
         RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
 
         // Obter a matriz coluna dos vetores próprios (Eigenfaces)
-        double[][] eigenfaces = MatrizColunaDosVetoresProprios(realMatrix, k);
+        double[][] eigenfaces = Main.MatrizColunaDosVetoresProprios(realMatrix, k);
 
         // Normalizar as Eigenfaces
-        double[][] eigenfacesNormalizadas = normalizeEigenfaces(eigenfaces);
+        double[][] eigenfacesNormalizadas = Main.normalizeEigenfaces(eigenfaces);
 
         // Exportar para um arquivo CSV
         try (FileWriter writer = new FileWriter(nomeArquivo)) {
@@ -429,6 +415,24 @@ public class Main {
         } catch (IOException e) {
             System.err.println("Erro ao escrever o arquivo CSV: " + e.getMessage());
         }
+    }
+    //Metodo para Calcular vetor com a média das imagens presentes na matriz
+    public static double[] calcularVetorMedia(double[][] matriz) {
+        int linhas = matriz.length;    // Número de linhas (imagens)
+        int colunas = matriz[0].length; // Número de colunas (pixels ou características)
+
+        double[] vetorMedia = new double[colunas]; // Vetor para armazenar a média de cada coluna
+
+        // Iterar sobre cada coluna para calcular a média
+        for (int j = 0; j < colunas; j++) {
+            double soma = 0.0;
+            for (int i = 0; i < linhas; i++) {
+                soma += matriz[i][j]; // Somar os valores da coluna
+            }
+            vetorMedia[j] = soma / linhas; // Calcular a média da coluna
+        }
+
+        return vetorMedia;
     }
 
 //Conversão matriz de imagem para vetor
@@ -502,12 +506,7 @@ public class Main {
         return matrizM;
     }
 
-    public static double[] CalcularPesos(double[][] desvio, double[] media) {
-        double[] CalcularPesos = new double[desvio.length];
-        for (int i = 0; i < desvio.length; i++) {
-            CalcularPesos[i] = desvio[i][0] * media[i];
-        }
-        return CalcularPesos;
-    }
+
+
 
 }
