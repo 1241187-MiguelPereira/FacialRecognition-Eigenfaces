@@ -122,6 +122,8 @@ public class Main {
 
         // Exportar matriz reconstruída
         exportarMatriz(reconstruida);
+
+
     }
 
     public static void funcionalidade2() {
@@ -129,11 +131,12 @@ public class Main {
         double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
         Scanner sc = new Scanner(System.in);
 
+        System.out.println("Digite o número de eigenfaces a usar:");
         int x = sc.nextInt();
 
         if (matrizImagens != null) {
             System.out.println("Matriz de imagens construída com sucesso:");
-            imprimirMatriz(matrizImagens);
+            //imprimirMatriz(matrizImagens);
         } else {
             System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
         }
@@ -147,7 +150,14 @@ public class Main {
         double[] mediaTransposta= transporMatrizColuna(vetorMedias);
         double[] matrizpesos= CalcularPesos(matrizA,mediaTransposta);
         double[] imagemReconstruída= reconstruirImagem(vetorMedias,normalizados,matrizpesos,x);
-        System.out.print(imagemReconstruída);
+
+        // matrizParaJPG();
+
+
+
+
+
+
     }
 
 
@@ -593,5 +603,43 @@ public class Main {
         }
         return CalcularPesos;
     }
+
+    public static int[][] matrizDoubleParaInt(double[][] matriz) {
+        int[][] intMatriz = new int[matriz.length][matriz[0].length];
+
+        // Convert each element from double to int (truncating decimals)
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                intMatriz[i][j] = (int) matriz[i][j]; // Cast from double to int
+            }
+        }
+        return intMatriz;
+    }
+
+    public static void matrizParaJPG(double[][] matriz) {
+        // Define a sample 2D array of pixel intensities (0-255)
+
+        int[][] intMatriz = matrizDoubleParaInt(matriz);
+
+        // Create an instance of GreyscaleImageWriter
+        GreyscaleImageWriter imageWriter = new GreyscaleImageWriter();
+
+        // Define the output file path
+        String outputPath = "ImagensReconstruidas/output_image.jpg";
+
+        // Write the 2D array as a greyscale image
+        try {
+            imageWriter.writeArrayAsImage(intMatriz, outputPath);
+            System.out.println("Image successfully written to " + outputPath);
+        } catch (IOException e) {
+            System.err.println("Failed to write the image: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid pixel values in the array: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }
