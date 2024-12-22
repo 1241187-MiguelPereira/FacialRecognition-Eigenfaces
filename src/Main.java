@@ -141,21 +141,22 @@ public class Main {
             System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
         }
         double[] vetorMedias = VetorColunaMedias(matrizImagens);
+        System.out.println("Vetor das médias:");
+        imprimirVetor(vetorMedias);
         double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
         double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
         RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
         double[][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal, x);
-        double[][] matrizVetoresC= multiplicarMatrizes(matrizA, matrizVetores);
+        System.out.println("Matriz dos vetores:");
+        imprimirMatriz(matrizVetores);
+        double[][] matrizVetoresC = multiplicarMatrizes(matrizA, matrizVetores);
         double[][] normalizados = normalizeEigenfaces(matrizVetoresC);
-        double[] mediaTransposta= transporMatrizColuna(vetorMedias);
-        double[] matrizpesos= CalcularPesos(matrizA,mediaTransposta);
-        double[] imagemReconstruída= reconstruirImagem(vetorMedias,normalizados,matrizpesos,x);
-
-        // matrizParaJPG();
-
-
-
-
+        double[] mediaTransposta = transporMatrizColuna(vetorMedias);
+        double[] matrizpesos = CalcularPesos(matrizA, mediaTransposta);
+        double[] imagemReconstruida = reconstruirImagem(vetorMedias, normalizados, matrizpesos, x);
+        double[][] matrizImagem = vetorParaMatriz(imagemReconstruida);
+        matrizParaJPG(matrizImagem);
+        exportarMatriz(matrizImagem);
 
 
     }
@@ -564,8 +565,6 @@ public class Main {
     }
 
 
-
-
     //Metodo para reconstruir a imagem utilizando k eigenfaces
     public static double[] reconstruirImagem(double[] vetorMedia, double[][] eigenfaces, double[] pesos, int k) {
         int tamanho = vetorMedia.length;
@@ -585,6 +584,7 @@ public class Main {
 
         return imagemReconstruida;
     }
+
     public static double[] transporMatrizColuna(double[] matrizColuna) {
         int linhas = matrizColuna.length; // O número de elementos na coluna define o número de linhas
         double[] matrizLinha = new double[linhas]; // Cria um vetor para representar a linha (transposta)
@@ -596,6 +596,7 @@ public class Main {
 
         return matrizLinha;
     }
+
     public static double[] CalcularPesos(double[][] desvio, double[] media) {
         double[] CalcularPesos = new double[desvio.length];
         for (int i = 0; i < desvio.length; i++) {
@@ -638,8 +639,37 @@ public class Main {
         }
     }
 
+    public static double[][] vetorParaMatriz(double[] vetor) {
+        // Calcula a largura e a altura assumindo que a matriz é quadrada
+        int tamanho = vetor.length;
+        int largura = (int) Math.sqrt(tamanho);
 
+        // Verifica se é possível formar uma matriz quadrada
+        if (largura * largura != tamanho) {
+            throw new IllegalArgumentException("O vetor não representa uma matriz quadrada.");
+        }
 
+        int altura = largura; // Para uma matriz quadrada, altura = largura
+
+        // Converte o vetor para uma matriz 2D
+        double[][] matriz = new double[altura][largura];
+        for (int i = 0; i < altura; i++) {
+            for (int j = 0; j < largura; j++) {
+                matriz[i][j] = vetor[i * largura + j];
+            }
+        }
+        return matriz;
+    }
+    public static void imprimirVetor(double[] vetor) {
+        System.out.print("[");
+        for (int i = 0; i < vetor.length; i++) {
+            System.out.printf("%.2f", vetor[i]); // Formata com 2 casas decimais
+            if (i < vetor.length - 1) {
+                System.out.print(", "); // Adiciona vírgula entre os elementos
+            }
+        }
+        System.out.println("]");
+    }
 
 
 }

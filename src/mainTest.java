@@ -3,6 +3,7 @@ public class mainTest {
         testIsSymmetric();
         testCalcularErroAbsolutoMedio();
         testMultiplicarMatrizes();
+        testImprimirMatriz();
     }
 
     public static void testIsSymmetric() {
@@ -97,15 +98,20 @@ public class mainTest {
         }
         return true;
     }
-public static double[][] CálculoDoDesvio(double [] vetorColuna,double[][] matrizA){
-        int linhas=matrizA.length;
-        int colunas=matrizA[0].length;
-        double[][] desvio = new double[linhas][colunas];
-        for (int j = 0; j < colunas; j++) {
-            for (int i = 0; i < linhas; i++) {
-                desvio[i][j]=matrizA[i][j]-vetorColuna[j];
-            }
-        }return desvio;
+public static void testImprimirMatriz(){
+
+        // Criando uma matriz de teste
+        double[][] matrizTeste = {
+                {1.1, 2.2, 3.3},
+                {4.4, 5.5, 6.6},
+                {7.7, 8.8, 9.9}
+        };
+
+        // Chamando o método de impressão da matriz
+        System.out.println("Imprimindo a matriz de teste:");
+        Main.imprimirMatriz(matrizTeste);
+    }
+
 }
-}
+
 
