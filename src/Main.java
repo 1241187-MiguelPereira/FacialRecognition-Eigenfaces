@@ -129,10 +129,12 @@ public class Main {
     public static void funcionalidade2() {
         String pastaImagens = "baseImagens";
         double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
+        int colunas = matrizImagens[0].length;
+        System.out.print(colunas);
         Scanner sc = new Scanner(System.in);
-
         System.out.println("Digite o número de eigenfaces a usar:");
         int x = sc.nextInt();
+        verificarValoresProprios(colunas, x);
 
         if (matrizImagens != null) {
             System.out.println("Matriz de imagens construída com sucesso:");
@@ -140,23 +142,31 @@ public class Main {
         } else {
             System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
         }
+        //calcular o vetor com as medias de cada coluna
         double[] vetorMedias = VetorColunaMedias(matrizImagens);
+        System.out.println("Tamanho do vetorMedia: " + vetorMedias.length);
+
         System.out.println("Vetor das médias:");
         imprimirVetor(vetorMedias);
+        //calcular o desvio de cada elemento à média
         double[][] matrizA = CálculoDoDesvio(vetorMedias, matrizImagens);
+        //calcular A^T.AT
         double[][] matrizCov = MatrizdasCovarianciasTeorema(matrizA);
+        //transformar numa matriz reconhecivel pela libraria
         RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+        // calcular os vetores próprios
         double[][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal, x);
         System.out.println("Matriz dos vetores:");
         imprimirMatriz(matrizVetores);
-        double[][] matrizVetoresC = multiplicarMatrizes(matrizA, matrizVetores);
+        double[][] matrizVetoresC = calcularEigenfaces(matrizA,matrizVetores);
         double[][] normalizados = normalizeEigenfaces(matrizVetoresC);
         double[] mediaTransposta = transporMatrizColuna(vetorMedias);
         double[] matrizpesos = CalcularPesos(matrizA, mediaTransposta);
         double[] imagemReconstruida = reconstruirImagem(vetorMedias, normalizados, matrizpesos, x);
-        double[][] matrizImagem = vetorParaMatriz(imagemReconstruida);
-        matrizParaJPG(matrizImagem);
-        exportarMatriz(matrizImagem);
+        System.out.println("Tamanho do vetor reconstruído: " + imagemReconstruida.length);
+        //double[][] matrizImagem = vetorParaMatriz(imagemReconstruida);
+        //matrizParaJPG(matrizImagem);
+        //exportarMatriz(matrizImagem);
 
 
     }
@@ -559,7 +569,7 @@ public class Main {
         double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
         // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
+        double[][] matrizCovariancias = multiplicarMatrizes(MatrizTransformada, matrizDosDesvios);
 
         return matrizCovariancias;
     }
@@ -597,13 +607,26 @@ public class Main {
         return matrizLinha;
     }
 
-    public static double[] CalcularPesos(double[][] desvio, double[] media) {
-        double[] CalcularPesos = new double[desvio.length];
-        for (int i = 0; i < desvio.length; i++) {
-            CalcularPesos[i] = desvio[i][0] * media[i];
+    public static double[] CalcularPesos(double[][] eigenfaces, double[] desvios) {
+        // Número de eigenfaces (ou o número de componentes principais)
+        int numEigenfaces = eigenfaces[0].length;
+
+        // Vetor para armazenar os pesos
+        double[] pesos = new double[numEigenfaces];
+
+        // Calcular os pesos (produto escalar entre os desvios e cada eigenface)
+        for (int i = 0; i < numEigenfaces; i++) {
+            double peso = 0;
+            for (int j = 0; j < desvios.length; j++) {
+                peso += desvios[j] * eigenfaces[j][i];  // Produto escalar
+            }
+            pesos[i] = peso;
         }
-        return CalcularPesos;
-    }
+
+        return pesos;
+
+
+}
 
     public static int[][] matrizDoubleParaInt(double[][] matriz) {
         int[][] intMatriz = new int[matriz.length][matriz[0].length];
@@ -660,6 +683,7 @@ public class Main {
         }
         return matriz;
     }
+
     public static void imprimirVetor(double[] vetor) {
         System.out.print("[");
         for (int i = 0; i < vetor.length; i++) {
@@ -671,5 +695,50 @@ public class Main {
         System.out.println("]");
     }
 
+    public static double[][] calcularEigenfaces(double[][] matrizDesvios, double[][] autovetoresATA) {
+        int linhas = matrizDesvios.length; // Número de linhas em A
+        int colunas = autovetoresATA[0].length; // Número de autovetores de A^T A
 
-}
+        // Matriz para armazenar as Eigenfaces (vetores próprios de AA^T)
+        double[][] eigenfaces = new double[linhas][colunas];
+
+        // Multiplica a matriz de desvios (A) pelos autovetores de A^T A (v_i) para obter u_i
+        for (int j = 0; j < colunas; j++) { // Para cada autovetor v_i
+            double[] colunaV = new double[autovetoresATA.length];
+            for (int k = 0; k < colunaV.length; k++) {
+                colunaV[k] = autovetoresATA[k][j]; // Extraindo a coluna j de autovetoresATA
+            }
+
+            // Calcula A * v_i para obter u_i
+            double[] colunaU = multiplicarMatrizPorVetor(matrizDesvios, colunaV);
+
+
+            // Insere u_i na matriz de Eigenfaces
+            for (int i = 0; i < linhas; i++) {
+                eigenfaces[i][j] = colunaU[i];
+            }
+        }
+
+        return eigenfaces;
+    }
+
+    // Método auxiliar para multiplicar matriz por vetor
+    public static double[] multiplicarMatrizPorVetor(double[][] matriz, double[] vetor) {
+        int linhas = matriz.length;
+        int colunas = matriz[0].length;
+
+        if (vetor.length != colunas) {
+            throw new IllegalArgumentException("O número de colunas da matriz deve ser igual ao tamanho do vetor.");
+        }
+
+        double[] resultado = new double[linhas];
+
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                resultado[i] += matriz[i][j] * vetor[j];
+            }
+        }
+
+        return resultado;
+
+    }}
