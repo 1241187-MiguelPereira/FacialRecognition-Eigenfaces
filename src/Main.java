@@ -130,7 +130,8 @@ public class Main {
         String pastaImagens = "baseImagens";
         double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-        System.out.print(colunas);
+        System.out.println(colunas);
+        System.out.print(matrizImagens.length);
         Scanner sc = new Scanner(System.in);
         System.out.println("Digite o número de eigenfaces a usar:");
         int x = sc.nextInt();
@@ -143,7 +144,7 @@ public class Main {
             System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
         }
         //calcular o vetor com as medias de cada coluna
-        double[] vetorMedias = VetorColunaMedias(matrizImagens);
+        double[] vetorMedias = VetorLinhaMedias(matrizImagens);
         System.out.println("Tamanho do vetorMedia: " + vetorMedias.length);
 
         System.out.println("Vetor das médias:");
@@ -370,21 +371,21 @@ public class Main {
         }
     }
 
-    public static double[] VetorColunaMedias(double[][] matrizA) {
+    public static double[] VetorLinhaMedias(double[][] matrizA) {
         int linhas = matrizA.length; // Número de linhas
         int colunas = matrizA[0].length; // Número de colunas
 
-        double[] vetorColuna = new double[colunas]; // Vetor para armazenar as médias de cada coluna
+        double[] vetorLinha = new double[linhas]; // Vetor para armazenar as médias de cada linha
 
-        // Loop para calcular a soma de cada coluna
-        for (int j = 0; j < colunas; j++) {
-            double soma = 0; // Resetar a soma para cada coluna
-            for (int i = 0; i < linhas; i++) {
-                soma += matrizA[i][j]; // Somar os valores da coluna atual
+        // Loop para calcular a soma de cada linha
+        for (int i = 0; i < linhas; i++) {
+            double soma = 0; // Resetar a soma para cada linha
+            for (int j = 0; j < colunas; j++) {
+                soma += matrizA[i][j]; // Somar os valores da linha atual
             }
-            vetorColuna[j] = soma / linhas; // Calcular a média da coluna
+            vetorLinha[i] = soma / colunas; // Calcular a média da linha
         }
-        return vetorColuna;
+        return vetorLinha;
     }
 
     public static double[][] CálculoDoDesvio(double[] vetorColuna, double[][] matrizA) {
