@@ -130,12 +130,11 @@ public class Main {
         String pastaImagens = "baseImagens";
         double[][] matrizImagens = construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-        System.out.println(colunas);
-        System.out.print(matrizImagens.length);
+
         Scanner sc = new Scanner(System.in);
         System.out.println("Digite o número de eigenfaces a usar:");
-        int x = sc.nextInt();
-        verificarValoresProprios(colunas, x);
+        int i = sc.nextInt();
+        int x = verificarValoresProprios(colunas, i);
 
         if (matrizImagens != null) {
             System.out.println("Matriz de imagens construída com sucesso:");
@@ -145,7 +144,6 @@ public class Main {
         }
         //calcular o vetor com as medias de cada coluna
         double[] vetorMedias = VetorLinhaMedias(matrizImagens);
-        System.out.println("Tamanho do vetorMedia: " + vetorMedias.length);
 
         System.out.println("Vetor das médias:");
         imprimirVetor(vetorMedias);
@@ -159,15 +157,17 @@ public class Main {
         double[][] matrizVetores = MatrizColunaDosVetoresProprios(matrizCovReal, x);
         System.out.println("Matriz dos vetores:");
         imprimirMatriz(matrizVetores);
-        double[][] matrizVetoresC = calcularEigenfaces(matrizA,matrizVetores);
+        double[][] matrizVetoresC = calcularEigenfaces(matrizA, matrizVetores);
         double[][] normalizados = normalizeEigenfaces(matrizVetoresC);
+        imprimirMatriz(normalizados);
         double[] mediaTransposta = transporMatrizColuna(vetorMedias);
         double[] matrizpesos = CalcularPesos(matrizA, mediaTransposta);
         double[] imagemReconstruida = reconstruirImagem(vetorMedias, normalizados, matrizpesos, x);
-        System.out.println("Tamanho do vetor reconstruído: " + imagemReconstruida.length);
-        //double[][] matrizImagem = vetorParaMatriz(imagemReconstruida);
-        //matrizParaJPG(matrizImagem);
-        //exportarMatriz(matrizImagem);
+        double[] imagemajustada = reescalonarParaImagem(imagemReconstruida);
+        System.out.println("Tamanho do vetor reconstruído: " + imagemajustada.length);
+        double[][] matrizImagem = vetorParaMatriz(imagemajustada);
+        matrizParaJPG(matrizImagem);
+        exportarMatriz(matrizImagem);
 
 
     }
@@ -627,7 +627,7 @@ public class Main {
         return pesos;
 
 
-}
+    }
 
     public static int[][] matrizDoubleParaInt(double[][] matriz) {
         int[][] intMatriz = new int[matriz.length][matriz[0].length];
@@ -742,4 +742,26 @@ public class Main {
 
         return resultado;
 
-    }}
+    }
+    public static double[] reescalonarParaImagem(double[] vetorReconstruido) {
+        // Encontre os valores mínimo e máximo no vetor
+        double min = Double.MAX_VALUE;
+        double max = -Double.MAX_VALUE;
+
+        for (double valor : vetorReconstruido) {
+            if (valor < min) min = valor;
+            if (valor > max) max = valor;
+        }
+
+        // Reescalonar os valores para o intervalo [0, 255]
+        double[] vetorReescalonado = new double[vetorReconstruido.length];
+        for (int i = 0; i < vetorReconstruido.length; i++) {
+            // Fórmula para reescalonamento
+            vetorReescalonado[i] = (vetorReconstruido[i] - min) / (max - min) * 255;
+            vetorReescalonado[i] = Math.max(0, Math.min(255, vetorReescalonado[i]));  // Garantir que está entre 0 e 255
+        }
+
+        return vetorReescalonado;
+    }
+
+}
