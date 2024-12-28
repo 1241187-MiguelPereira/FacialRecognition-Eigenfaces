@@ -32,13 +32,13 @@ public class mainTest {
                 {3.0, 5.0, 6.0}
         };
 
-        if (Main.isSymmetric(symmetricMatrix, 3, 3)) {
+        if (Validacoes.isSymmetric(symmetricMatrix, 3, 3)) {
             System.out.println("isSymmetric passou no teste com matriz simétrica.");
         } else {
             System.out.println("isSymmetric falhou no teste com matriz simétrica.");
         }
 
-        if (!Main.isSymmetric(nonSymmetricMatrix, 3, 3)) {
+        if (!Validacoes.isSymmetric(nonSymmetricMatrix, 3, 3)) {
             System.out.println("isSymmetric passou no teste com matriz não simétrica.");
         } else {
             System.out.println("isSymmetric falhou no teste com matriz não simétrica.");
@@ -59,7 +59,7 @@ public class mainTest {
         };
 
         double expectedError = 0.1;
-        double result = Main.calcularErroAbsolutoMedio(original, reconstruida, 2, 2);
+        double result = Calculos.calcularErroAbsolutoMedio(original, reconstruida, 2, 2);
 
         if (Math.abs(result - expectedError) < 0.01) {
             System.out.println("calcularErroAbsolutoMedio passou no teste.");
@@ -86,7 +86,7 @@ public class mainTest {
                 {10, 8}
         };
 
-        double[][] result = Main.multiplicarMatrizes(A, B);
+        double[][] result = Calculos.multiplicarMatrizes(A, B);
 
         if (arraysIguais(expected, result)) {
             System.out.println("multiplicarMatrizes passou no teste.");
@@ -123,7 +123,7 @@ public class mainTest {
 
         // Chamando o método de impressão da matriz
         System.out.println("Imprimindo a matriz de teste:");
-        Main.imprimirMatriz(matrizTeste);
+        UI.imprimirMatriz(matrizTeste);
     }
 
     public static void testVetorLinhaMedias() {
@@ -135,7 +135,7 @@ public class mainTest {
                 {7.0, 8.0, 9.0}
         };
         double[] expected = {4.0, 5.0, 6.0};
-        double[] result = Main.VetorLinhaMedias(matrizImagens);
+        double[] result = Calculos.VetorLinhaMedias(matrizImagens);
 
         if (java.util.Arrays.equals(result, expected)) {
             System.out.println("VetorLinhaMedias passou no teste.");
@@ -158,7 +158,7 @@ public class mainTest {
                 {0.0, 0.0, 0.0},
                 {3.0, 3.0, 3.0}
         };
-        double[][] result = Main.CálculoDoDesvio(vetorMedias, matrizImagens);
+        double[][] result = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
 
         if (java.util.Arrays.deepEquals(result, expected)) {
             System.out.println("CálculoDoDesvio passou no teste.");
@@ -180,7 +180,7 @@ public class mainTest {
                 {18.0, 18.0, 18.0},
                 {18.0, 18.0, 18.0}
         };
-        double[][] result = Main.MatrizdasCovarianciasTeorema(matrizA);
+        double[][] result = Calculos.MatrizdasCovarianciasTeorema(matrizA);
 
         if (java.util.Arrays.deepEquals(result, expected)) {
             System.out.println("MatrizdasCovarianciasTeorema passou no teste.");
@@ -199,7 +199,7 @@ public class mainTest {
         });
         int x = 2;
 
-        double[][] result = Main.MatrizColunaDosVetoresProprios(matrizCovReal, x);
+        double[][] result = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
 
         if (result != null && result[0].length == x) {
             System.out.println("MatrizColunaDosVetoresProprios passou no teste.");
@@ -222,7 +222,7 @@ public class mainTest {
                 {0.0, 0.0}
         };
 
-        double[][] result = Main.calcularEigenfaces(matrizA, matrizVetores);
+        double[][] result = Calculos.calcularEigenfaces(matrizA, matrizVetores);
 
         if (result != null && result[0].length == matrizVetores[0].length) {
             System.out.println("calcularEigenfaces passou no teste.");
@@ -245,7 +245,7 @@ public class mainTest {
                 {0.8944, 0.8944}
         };
 
-        double[][] result = Main.normalizeEigenfaces(matrizVetores);
+        double[][] result = Calculos.normalizeEigenfaces(matrizVetores);
 
         // Definir uma tolerância numérica para comparação
         double tolerance = 1e-4; // Menor precisão devido à comparação dos valores de ponto flutuante
@@ -281,7 +281,7 @@ public class mainTest {
         };
         double[] vetorMedia = {4.0, 5.0, 6.0};
 
-        double[] result = Main.CalcularPesos(matrizA, vetorMedia);
+        double[] result = Calculos.CalcularPesos(matrizA, vetorMedia);
 
         if (result != null) {
             System.out.println("CalcularPesos passou no teste.");
@@ -318,7 +318,7 @@ public class mainTest {
                 {1.0, 2.0},
                 {3.0, 4.0}
         };
-        double[][] result = Main.vetorParaMatriz(vetor);
+        double[][] result = Conversoes.vetorParaMatriz(vetor);
 
         if (java.util.Arrays.deepEquals(result, expected)) {
             System.out.println("vetorParaMatriz passou no teste");
