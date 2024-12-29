@@ -14,7 +14,6 @@ public class mainTest {
         testNormalizeEigenfaces();
         testCalcularPesos();
         testReconstruirImagem();
-        testVetorParaMatriz();
     }
 
     public static void testIsSymmetric() {
@@ -308,24 +307,8 @@ public class mainTest {
         } else {
             System.out.println("reconstruirImagem falhou no teste.");
         }
-    }
+    }}
 
-    public static void testVetorParaMatriz() {
-        System.out.println("Testando vetorParaMatriz...");
 
-        double[] vetor = {1.0, 2.0, 3.0, 4.0};
-        double[][] expected = {
-                {1.0, 2.0},
-                {3.0, 4.0}
-        };
-        double[][] result = Conversoes.vetorParaMatriz(vetor);
-
-        if (java.util.Arrays.deepEquals(result, expected)) {
-            System.out.println("vetorParaMatriz passou no teste");
-        } else
-            System.out.print("vetorParaMatriz não passou no teste");
-
-    }
-}
 
 

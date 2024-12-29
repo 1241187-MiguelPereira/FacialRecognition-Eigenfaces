@@ -1,4 +1,7 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.File;
 
 public class Conversoes {
       public static double[] converterMatrizParaVetor(double[][] matriz) {
@@ -35,50 +38,41 @@ public class Conversoes {
             return intMatriz;
       }
 
-      public static void matrizParaJPG(double[][] matriz) {
-            // Define a sample 2D array of pixel intensities (0-255)
+      public static void escreverArraycomoImagem(double[][] array) throws IOException {
+            int alturaImagem = array.length;
+            int larguraImagem = array[0].length;
+            BufferedImage imagem = new BufferedImage(larguraImagem, alturaImagem, BufferedImage.TYPE_BYTE_GRAY);
 
-            int[][] intMatriz = matrizDoubleParaInt(matriz);
-
-            // Create an instance of GreyscaleImageWriter
-            GreyscaleImageWriter imageWriter = new GreyscaleImageWriter();
-
-            // Define the output file path
-            String outputPath = "ImagensReconstruidas/output_image.jpg";
-
-            // Write the 2D array as a greyscale image
-            try {
-                  imageWriter.writeArrayAsImage(intMatriz, outputPath);
-                  System.out.println("Image successfully written to " + outputPath);
-            } catch (IOException e) {
-                  System.err.println("Failed to write the image: " + e.getMessage());
-            } catch (IllegalArgumentException e) {
-                  System.err.println("Invalid pixel values in the array: " + e.getMessage());
-            }
-      }
-
-      public static double[][] vetorParaMatriz(double[] vetor) {
-            // Calcula a largura e a altura assumindo que a matriz é quadrada
-            int tamanho = vetor.length;
-            int largura = (int) Math.sqrt(tamanho);
-
-            // Verifica se é possível formar uma matriz quadrada
-            if (largura * largura != tamanho) {
-                  throw new IllegalArgumentException("O vetor não representa uma matriz quadrada.");
-            }
-
-            int altura = largura; // Para uma matriz quadrada, altura = largura
-
-            // Converte o vetor para uma matriz 2D
-            double[][] matriz = new double[altura][largura];
-            for (int i = 0; i < altura; i++) {
-                  for (int j = 0; j < largura; j++) {
-                        matriz[i][j] = vetor[i * largura + j];
+            for (int y = 0; y < alturaImagem; y++) {
+                  for (int x = 0; x < larguraImagem; x++) {
+                        int intensidade = (int) array[y][x];
+                        if (intensidade < -10 || intensidade > 255) {
+                              System.out.println(intensidade);
+                              throw new IllegalArgumentException("A intensidade do pixel deve estar entre 0 e 255.");
+                        }
+                        int rgb = (intensidade << 16) | (intensidade << 8) | intensidade;
+                        imagem.setRGB(x, y, rgb);
                   }
             }
-            return matriz;
+            File outputFile = new File("src\\outputs\\ImagensReconstruidas");
+            ImageIO.write(imagem, "jpg", outputFile);
+
       }
 
+      public static double[][] arrayparaMatriz(int[][] array) {
+            int colunas = 64;
+            int linhas = 64;
+            if (array.length != linhas * colunas) {
+                  throw new IllegalArgumentException("O vetor não equivale às dimensões da matriz");
+            }
+            double[][] arrayConvertido = new double[linhas][colunas];
+            for (int i = 0; i < linhas; i++) {
+                  for (int j = 0; j < colunas; j++) {
+                        arrayConvertido[i][j] = array[i * colunas + j][0];
+                  }
+            }
+            return arrayConvertido;
+}
 
 
 
