@@ -186,24 +186,6 @@ public class Calculos {
     //Metodo para criar um csv com eigenfaces normalizadas
 
 
-    //Metodo para Calcular vetor com a média das imagens presentes na matriz
-    public static double[] calcularVetorMedia(double[][] matriz) {
-        int linhas = matriz.length;    // Número de linhas (imagens)
-        int colunas = matriz[0].length; // Número de colunas (pixels ou características)
-
-        double[] vetorMedia = new double[colunas]; // Vetor para armazenar a média de cada coluna
-
-        // Iterar sobre cada coluna para calcular a média
-        for (int j = 0; j < colunas; j++) {
-            double soma = 0.0;
-            for (int i = 0; i < linhas; i++) {
-                soma += matriz[i][j]; // Somar os valores da coluna
-            }
-            vetorMedia[j] = soma / linhas; // Calcular a média da coluna
-        }
-
-        return vetorMedia;
-    }
 
     public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios) {
         int linhas = matrizDosDesvios.length;
@@ -316,26 +298,85 @@ public class Calculos {
         return pesos;
     }
 
-    public static double[][] reconstruirTodasImagens(double[] media, double[][] eigenfaces, double[][] pesos, int k) {
-        int numImagens = pesos[0].length; // Número de imagens
-        double[][] imagensReconstruidas = new double[media.length][numImagens]; // Matriz para armazenar as imagens reconstruídas
+    public static double[][] reconstruirImagens(double[] media, double[][] eigenfaces, double[][] pesos, int k, int coluna) {
+        // Se `coluna` for nulo, reconstruir todas as imagens
+        if (coluna == -1) {
+            int numImagens = pesos[0].length; // Número de imagens
+            double[][] imagensReconstruidas = new double[media.length][numImagens]; // Matriz para armazenar todas as imagens reconstruídas
 
-        for (int i = 0; i < numImagens; i++) {
+            for (int i = 0; i < numImagens; i++) {
+                // Inicializar com a média
+                for (int j = 0; j < media.length; j++) {
+                    imagensReconstruidas[j][i] = media[j];
+                }
+
+                // Adicionar contribuição das eigenfaces ponderadas pelos pesos
+                for (int p = 0; p < k; p++) {
+                    for (int j = 0; j < media.length; j++) {
+                        imagensReconstruidas[j][i] += eigenfaces[j][p] * pesos[p][i];
+                    }
+                }
+            }
+            return imagensReconstruidas;
+
+        } else {
+            // Reconstruir apenas uma imagem
+            double[][] imagemReconstruida = new double[media.length][1]; // Matriz para armazenar uma única imagem reconstruída
+
             // Inicializar com a média
             for (int j = 0; j < media.length; j++) {
-                imagensReconstruidas[j][i] = media[j];
+                imagemReconstruida[j][0] = media[j];
             }
 
             // Adicionar contribuição das eigenfaces ponderadas pelos pesos
             for (int p = 0; p < k; p++) {
                 for (int j = 0; j < media.length; j++) {
-                    imagensReconstruidas[j][i] += eigenfaces[j][p] * pesos[p][i];
+                    imagemReconstruida[j][0] += eigenfaces[j][p] * pesos[p][coluna];
                 }
             }
+            return imagemReconstruida;
+        }
+    }
+
+//--------FUNCIONALIDADE 3 EXCLUSIVAMENTE------------//
+    public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][] omegaBase) {
+        int numVetores = omegaBase.length; // Número de vetores na base
+        double[] distancias = new double[numVetores]; // Vetor para armazenar as distâncias
+
+        for (int i = 0; i < numVetores; i++) {
+            double soma = 0.0;
+            for (int j = 0; j < omegaNova.length; j++) { // Percorre cada dimensão
+                soma += Math.pow(omegaNova[j] - omegaBase[i][j], 2);
+            }
+            distancias[i] = Math.sqrt(soma); // Calcula a distância euclidiana
         }
 
-        return imagensReconstruidas;
-
-
+        return distancias;
     }
+    public static double[] CalculoDoDesvio(double[] vetorColuna, double[] vetorAlvo) {
+        int tamanho = vetorColuna.length;
+        double[] desvio = new double[tamanho];
+
+        for (int i = 0; i < tamanho; i++) {
+            desvio[i] = vetorAlvo[i] - vetorColuna[i];
+        }
+
+        return desvio;
+    }
+    public static double[] calcularPesosImagemAlvo(double[] imagemAlvo, double[][] eigenfaces, int k) {
+        // Criamos uma array para armazenar os pesos da imagem alvo
+        double[] pesos = new double[k];
+
+        // Calculamos os pesos (projeção da imagem alvo nas k eigenfaces)
+        for (int p = 0; p < k; p++) { // Para cada eigenface
+            double soma = 0;
+            for (int j = 0; j < imagemAlvo.length; j++) { // Para cada pixel da imagem alvo
+                soma += eigenfaces[j][p] * imagemAlvo[j];
+            }
+            pesos[p] = soma;
+        }
+
+        return pesos;
+    }
+
 }

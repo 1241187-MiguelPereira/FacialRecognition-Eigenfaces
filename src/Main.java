@@ -33,7 +33,7 @@ public class Main {
                     break;
 
                 case "3":
-
+                    funcionalidade3();
                     break;
 
                 case "END":
@@ -46,8 +46,6 @@ public class Main {
             }
         } while (!escolha.equals("END"));
     }
-
-
 
 
     public static void funcionalidade1() {
@@ -118,7 +116,7 @@ public class Main {
         String pastaImagens = "baseImagens";
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-
+        int coluna = -1;
 
 
         Scanner sc = new Scanner(System.in);
@@ -136,8 +134,6 @@ public class Main {
         //calcular o vetor com as medias de cada coluna
         double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
 
-        //System.out.println("Vetor das médias:");
-        //UI.imprimirVetor(vetorMedias);
         //calcular o desvio de cada elemento à média
         double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
         //calcular A^T.AT
@@ -146,14 +142,13 @@ public class Main {
         RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
         // calcular os vetores próprios
         double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
-        //System.out.println("Matriz dos vetores:");
-        //UI.imprimirMatriz(matrizVetores);
+
         // calcular as eigenfaces, e armazená-las numa matriz
         double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
         //UI.imprimirMatriz(normalizados);
-        double[][] matrizpesos = Calculos.calcularPesos(matrizA,normalizados,x);
-        double[][] imagensReconstruidas = Calculos.reconstruirTodasImagens(vetorMedias,normalizados,matrizpesos,x);
+        double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizpesos, x, coluna);
         Conversoes.escreverArraycomoImagem(imagensReconstruidas);
         Escrita.guardarImagem(imagensReconstruidas);
         Escrita.exportarMatriz(imagensReconstruidas);
@@ -161,6 +156,75 @@ public class Main {
 
     }
 
+    public static void funcionalidade3() {
+        String pastaImagens = "baseImagens";
+        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
+        int colunas = matrizImagens[0].length;
+
+
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Digite o número de eigenfaces a usar:");
+        int i = sc.nextInt();
+        int x = Validacoes.verificarValoresProprios(colunas, i);
+        System.out.print(x);
+
+        if (matrizImagens != null) {
+            System.out.println("Matriz de imagens construída com sucesso:");
+            //imprimirMatriz(matrizImagens);
+        } else {
+            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+        }
+        //calcular o vetor com as medias de cada coluna
+        double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
+
+        //calcular o desvio de cada elemento à média
+        double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
+        //calcular A^T.AT
+        double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
+        //transformar numa matriz reconhecivel pela libraria
+        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+        // calcular os vetores próprios
+        double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
+
+        // calcular as eigenfaces, e armazená-las numa matriz
+        double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
+        double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
+        //UI.imprimirMatriz(normalizados);
+        double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        String filePath = "exampleInputFunc1.csv";
+
+
+        // Ler a matriz do ficheiro
+        double[][] ImagemAlvo = Leitura.lerMatriz(filePath);
+        if (ImagemAlvo == null) {
+            System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
+
+        }
+        double[] vetorAlvo= Conversoes.converterMatrizParaVetor(ImagemAlvo);
+        double[] vetorCentralizado= Calculos.CalculoDoDesvio(vetorMedias,vetorAlvo);
+        double[] vetorPesosAlvo= Calculos.calcularPesosImagemAlvo(vetorCentralizado,normalizados,x);
+        double[] VetorDasDistanciasEuclidianas= Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo,matrizpesos);
+        int indice= Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
+        double[][] ImagemEncontrada = Calculos.reconstruirImagens(vetorMedias,normalizados,matrizpesos,x,indice);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
     //Metodo para reconstruir a imagem utilizando k eigenfaces
 
     public static double[] reconstruirImagem(double[] vetorMedia, double[][] eigenfaces, double[] pesos, int k) {
@@ -181,11 +245,6 @@ public class Main {
 
         return imagemReconstruida;
     }
-
-
-
-
-
 
 
 }

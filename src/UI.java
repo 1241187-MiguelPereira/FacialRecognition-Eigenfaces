@@ -2,8 +2,8 @@ public class UI {
       public static void mostrarMenu() {
             System.out.println("\n--- MENU ---");
             System.out.println("1 - Reconstrução de Matriz");
-            System.out.println("2 - Construção da Matriz de Imagens");
-            System.out.println("3 - Exportação de Eigenfaces Normalizadas");
+            System.out.println("2 - Reconstrução de imagens");
+            System.out.println("3 - Reconhecimento facial");
             System.out.println("END - Encerrar o programa");
       }
       public static void imprimirMatriz(double[][] matrix) {
