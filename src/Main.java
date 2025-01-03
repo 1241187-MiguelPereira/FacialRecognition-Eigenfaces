@@ -116,44 +116,37 @@ public class Main {
         String pastaImagens = "baseImagens";
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-        int coluna = -1;
 
+        if (matrizImagens == null) {
+            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+            return;
+        }
+
+        System.out.println("Imagens lidas com sucesso.");
+        System.out.println("Digite o número de eigenfaces a utilizar:");
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Digite o número de eigenfaces a usar:");
         int i = sc.nextInt();
         int x = Validacoes.verificarValoresProprios(colunas, i);
-        System.out.print(x);
 
-        if (matrizImagens != null) {
-            System.out.println("Matriz de imagens construída com sucesso:");
-            //imprimirMatriz(matrizImagens);
-        } else {
-            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
-        }
-        //calcular o vetor com as medias de cada coluna
         double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
-
-        //calcular o desvio de cada elemento à média
         double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
-        //calcular A^T.AT
         double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
-        //transformar numa matriz reconhecivel pela libraria
-        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
-        // calcular os vetores próprios
-        double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
 
-        // calcular as eigenfaces, e armazená-las numa matriz
+        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+        double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
         double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
-        //UI.imprimirMatriz(normalizados);
-        double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
-        double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizpesos, x, coluna);
+
+        double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
+
         Conversoes.escreverArraycomoImagem(imagensReconstruidas);
         Escrita.guardarImagem(imagensReconstruidas);
         Escrita.exportarMatriz(imagensReconstruidas);
 
-
+        System.out.println("Matriz de imagens construída com sucesso: todas as imagens escritas.");
+        System.out.println("Matriz exportada com sucesso para o arquivo: matrizReconstruida.csv");
     }
 
     public static void funcionalidade3() {
