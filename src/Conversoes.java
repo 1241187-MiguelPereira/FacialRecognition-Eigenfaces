@@ -38,27 +38,24 @@ public class Conversoes {
             return intMatriz;
       }
 
-      public static void escreverArraycomoImagem(double[][] array) throws IOException {
+      public static void escreverArraycomoImagem(double[][] array, String caminhoOutput) throws IOException {
             int alturaImagem = array.length;
             int larguraImagem = array[0].length;
             BufferedImage imagem = new BufferedImage(larguraImagem, alturaImagem, BufferedImage.TYPE_BYTE_GRAY);
 
             for (int y = 0; y < alturaImagem; y++) {
                   for (int x = 0; x < larguraImagem; x++) {
-                        int intensidade = (int) array[y][x];
-                        if (intensidade < -10 || intensidade > 255) {
-                              System.out.println(intensidade);
+                        int intensidade = Math.abs((int) array[y][x]);
+                        if (intensidade < 0 || intensidade > 255) {
                               throw new IllegalArgumentException("A intensidade do pixel deve estar entre 0 e 255.");
                         }
                         int rgb = (intensidade << 16) | (intensidade << 8) | intensidade;
                         imagem.setRGB(x, y, rgb);
                   }
             }
-            File outputFile = new File("outputs\\ImagensReconstruidas");
+            File outputFile = new File(caminhoOutput);
             ImageIO.write(imagem, "jpg", outputFile);
-
       }
-
       public static double[][] arrayparaMatriz(int[][] array) {
             int colunas = 64;
             int linhas = 64;

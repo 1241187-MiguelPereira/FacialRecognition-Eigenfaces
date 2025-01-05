@@ -141,7 +141,7 @@ public class Main {
         double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
 
-        Escrita.guardarImagem(imagensReconstruidas);
+        Escrita.guardarImagem(imagensReconstruidas,"src\\outputs\\ImagensReconstruídas","Imagem");
         Escrita.exportarMatriz(imagensReconstruidas);
 
         System.out.println("Matriz de imagens construída com sucesso: todas as imagens escritas.");
