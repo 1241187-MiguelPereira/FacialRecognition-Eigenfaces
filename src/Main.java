@@ -141,7 +141,6 @@ public class Main {
         double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
 
-        Conversoes.escreverArraycomoImagem(imagensReconstruidas);
         Escrita.guardarImagem(imagensReconstruidas);
         Escrita.exportarMatriz(imagensReconstruidas);
 
@@ -198,7 +197,7 @@ public class Main {
         double[] vetorPesosAlvo= Calculos.calcularPesosImagemAlvo(vetorCentralizado,normalizados,x);
         double[] VetorDasDistanciasEuclidianas= Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo,matrizpesos);
         int indice= Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
-        double[][] ImagemEncontrada = Calculos.reconstruirImagens(vetorMedias,normalizados,matrizpesos,x,indice);
+
 
 
 

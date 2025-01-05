@@ -64,7 +64,7 @@ public class Escrita {
                 }
 
                 String nomeImagem = "imagem_" + (coluna + 1) + ".jpg";
-                String caminhoImagem = "src\\outputs\\ImagensReconstruidas" + File.separator + nomeImagem;
+                String caminhoImagem = "outputs/ImagensReconstruídas" + File.separator + nomeImagem;
 
                 double[][] matrizImagemReconstruida = Conversoes.arrayparaMatriz(intimagemReconstruida);
 

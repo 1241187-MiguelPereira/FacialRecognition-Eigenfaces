@@ -54,7 +54,7 @@ public class Conversoes {
                         imagem.setRGB(x, y, rgb);
                   }
             }
-            File outputFile = new File("src\\outputs\\ImagensReconstruidas");
+            File outputFile = new File("outputs\\ImagensReconstruidas");
             ImageIO.write(imagem, "jpg", outputFile);
 
       }
