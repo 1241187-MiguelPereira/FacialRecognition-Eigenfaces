@@ -128,8 +128,12 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int i = sc.nextInt();
         int x = Validacoes.verificarValoresProprios(colunas, i);
+        System.out.println("Numero de eigenfaces: ");
+        System.out.println(x);
 
         double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
+        System.out.println("Vetor coluna das médias:");
+        Escrita.ImprimirVetor(vetorMedias);
         double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
         double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
 
@@ -139,6 +143,7 @@ public class Main {
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
 
         double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        Escrita.ImprimirPesos(matrizPesos,x);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
 
         Escrita.guardarImagem(imagensReconstruidas,"src\\outputs\\ImagensReconstruídas","Imagem");
@@ -158,7 +163,9 @@ public class Main {
         System.out.println("Digite o número de eigenfaces a usar:");
         int i = sc.nextInt();
         int x = Validacoes.verificarValoresProprios(colunas, i);
-        System.out.print(x);
+        System.out.println("Número de Eigenfaces/Pesos utilizados na identificação da imagem:");
+        System.out.println(x);
+
 
         if (matrizImagens != null) {
             System.out.println("Matriz de imagens construída com sucesso:");
@@ -183,6 +190,8 @@ public class Main {
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
         //UI.imprimirMatriz(normalizados);
         double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        Escrita.ImprimirPesos(matrizpesos,x);
+
         String filePath = "exampleInputFunc1.csv";
 
 
@@ -196,7 +205,9 @@ public class Main {
         double[] vetorCentralizado= Calculos.CalculoDoDesvio(vetorMedias,vetorAlvo);
         double[] vetorPesosAlvo= Calculos.calcularPesosImagemAlvo(vetorCentralizado,normalizados,x);
         double[] VetorDasDistanciasEuclidianas= Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo,matrizpesos);
+        Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
         int indice= Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
+
 
 
 

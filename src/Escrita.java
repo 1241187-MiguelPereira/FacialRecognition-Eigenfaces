@@ -77,5 +77,31 @@ public class Escrita {
             System.err.println("Valores de pixeis inválidos no array: " + e.getMessage());
         }
     }
+
+    public static void ImprimirPesos(double[][] pesos, int k) {
+        for (int i = 0; i < pesos[0].length; i++) {
+            System.out.println("Imagem " + (i + 1) + ":");
+            System.out.print("Pesos w: ");
+            for (int p = 0; p < k; p++) {
+                System.out.printf("%.2f ", pesos[p][i]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void ImprimirDistancias(double[] pesos) {
+        for (int i = 0; i < pesos.length; i++) {
+            System.out.println("Imagem " + (i + 1) + ":");
+            System.out.print("Distancia Euclidiana : ");
+            System.out.printf("%.2f ", pesos[i]);
+            System.out.println(); // Salta para a próxima linha
+        }
+    }
+    public static void ImprimirVetor(double[] vetor) {
+        for (int i = 0; i < vetor.length; i++) {
+            System.out.print(vetor[i]);
+        }
+    }
 }
+
 
