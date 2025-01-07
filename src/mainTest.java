@@ -12,8 +12,6 @@ public class mainTest {
         testMatrizColunaDosVetoresProprios();
         testCalcularEigenfaces();
         testNormalizeEigenfaces();
-        testCalcularPesos();
-        testReconstruirImagem();
     }
 
     public static void testIsSymmetric() {
@@ -270,44 +268,8 @@ public class mainTest {
     }
 
 
-    public static void testCalcularPesos() {
-        System.out.println("Testando CalcularPesos...");
 
-        double[][] matrizA = {
-                {-3.0, -3.0, -3.0},
-                {0.0, 0.0, 0.0},
-                {3.0, 3.0, 3.0}
-        };
-        double[] vetorMedia = {4.0, 5.0, 6.0};
-
-        double[] result = Calculos.CalcularPesos(matrizA, vetorMedia);
-
-        if (result != null) {
-            System.out.println("CalcularPesos passou no teste.");
-        } else {
-            System.out.println("CalcularPesos falhou no teste.");
-        }
     }
-
-    public static void testReconstruirImagem() {
-        System.out.println("Testando reconstruirImagem...");
-
-        double[] vetorMedias = {4.0, 5.0, 6.0};
-        double[][] normalizados = {
-                {0.6, 0.8},
-                {0.0, 0.0},
-                {0.6, 0.8}
-        };
-        double[] matrizPesos = {1.0, 2.0};
-
-        double[] result = Main.reconstruirImagem(vetorMedias, normalizados, matrizPesos, 2);
-
-        if (result != null && result.length == vetorMedias.length) {
-            System.out.println("reconstruirImagem passou no teste.");
-        } else {
-            System.out.println("reconstruirImagem falhou no teste.");
-        }
-    }}
 
 
 

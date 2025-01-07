@@ -27,32 +27,7 @@ public class Escrita {
         }
     }
 
-    public static void exportarEigenfaces(double[][] matriz, int k, String nomeArquivo) {
-        // Criar a matriz RealMatrix a partir da matriz original
-        RealMatrix realMatrix = new Array2DRowRealMatrix(matriz);
 
-        // Obter a matriz coluna dos vetores próprios (Eigenfaces)
-        double[][] eigenfaces = Calculos.MatrizColunaDosVetoresProprios(realMatrix, k);
-
-        // Normalizar as Eigenfaces
-        double[][] eigenfacesNormalizadas = Calculos.normalizeEigenfaces(eigenfaces);
-
-        // Exportar para um arquivo CSV
-        try (FileWriter writer = new FileWriter(nomeArquivo)) {
-            for (int i = 0; i < eigenfacesNormalizadas.length; i++) {
-                for (int j = 0; j < eigenfacesNormalizadas[i].length; j++) {
-                    writer.append(String.valueOf(eigenfacesNormalizadas[i][j]));
-                    if (j < eigenfacesNormalizadas[i].length - 1) {
-                        writer.append(",");
-                    }
-                }
-                writer.append("\n");
-            }
-            System.out.println("Eigenfaces exportadas com sucesso para o arquivo: " + nomeArquivo);
-        } catch (IOException e) {
-            System.err.println("Erro ao escrever o arquivo CSV: " + e.getMessage());
-        }
-    }
 
     public static void guardarImagem(double[][] inputCSV, String caminhoOutput, String nome) {
 

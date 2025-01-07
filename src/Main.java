@@ -143,10 +143,10 @@ public class Main {
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
 
         double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
-        Escrita.ImprimirPesos(matrizPesos,x);
+        Escrita.ImprimirPesos(matrizPesos, x);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
 
-        Escrita.guardarImagem(imagensReconstruidas,"src\\outputs\\ImagensReconstruídas","Imagem");
+        Escrita.guardarImagem(imagensReconstruidas, "src\\outputs\\ImagensReconstruídas", "Imagem");
         Escrita.exportarMatriz(imagensReconstruidas);
 
         System.out.println("Matriz de imagens construída com sucesso: todas as imagens escritas.");
@@ -190,7 +190,7 @@ public class Main {
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
         //UI.imprimirMatriz(normalizados);
         double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
-        Escrita.ImprimirPesos(matrizpesos,x);
+        Escrita.ImprimirPesos(matrizpesos, x);
 
         String filePath = "exampleInputFunc1.csv";
 
@@ -201,52 +201,14 @@ public class Main {
             System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
 
         }
-        double[] vetorAlvo= Conversoes.converterMatrizParaVetor(ImagemAlvo);
-        double[] vetorCentralizado= Calculos.CalculoDoDesvio(vetorMedias,vetorAlvo);
-        double[] vetorPesosAlvo= Calculos.calcularPesosImagemAlvo(vetorCentralizado,normalizados,x);
-        double[] VetorDasDistanciasEuclidianas= Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo,matrizpesos);
+        double[] vetorAlvo = Conversoes.converterMatrizParaVetor(ImagemAlvo);
+        double[] vetorCentralizado = Calculos.CalculoDoDesvio(vetorMedias, vetorAlvo);
+        double[] vetorPesosAlvo = Calculos.calcularPesosImagemAlvo(vetorCentralizado, normalizados, x);
+        double[] VetorDasDistanciasEuclidianas = Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo, matrizpesos);
         Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
-        int indice= Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
+        int indice = Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-    //Metodo para reconstruir a imagem utilizando k eigenfaces
-
-    public static double[] reconstruirImagem(double[] vetorMedia, double[][] eigenfaces, double[] pesos, int k) {
-        int tamanho = vetorMedia.length;
-        double[] imagemReconstruida = new double[tamanho];
-
-        // Inicializa a imagem reconstruída com o vetor média
-        for (int i = 0; i < tamanho; i++) {
-            imagemReconstruida[i] = vetorMedia[i];
-        }
-
-        // Adiciona a contribuição de cada eigenface ponderada pelos pesos
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < tamanho; j++) {
-                imagemReconstruida[j] += pesos[i] * eigenfaces[j][i];
-            }
-        }
-
-        return imagemReconstruida;
     }
 
 

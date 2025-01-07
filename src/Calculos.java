@@ -163,27 +163,8 @@ public class Calculos {
         return normalizedEigenvectors;
     }
 
-    public static double[][] MatrizdasCovariancias(double[][] matrizDosDesvios, double imagens) {
-        int linhas = matrizDosDesvios.length;
-        int colunas = matrizDosDesvios[0].length;
 
-        // Criar a matriz transposta
-        double[][] MatrizTransformada = criarTransposta(matrizDosDesvios);
 
-        // Multiplicar a matriz transposta pela matriz original dos desvios
-        double[][] matrizCovariancias = multiplicarMatrizes(matrizDosDesvios, MatrizTransformada);
-
-        // Dividir cada elemento da matriz resultante pelo número de imagens
-        for (int i = 0; i < matrizCovariancias.length; i++) {
-            for (int j = 0; j < matrizCovariancias[i].length; j++) {
-                matrizCovariancias[i][j] /= imagens;
-            }
-        }
-
-        return matrizCovariancias;
-    }
-
-    //Metodo para criar um csv com eigenfaces normalizadas
 
 
 
@@ -212,26 +193,7 @@ public class Calculos {
         return matrizLinha;
     }
 
-    public static double[] CalcularPesos(double[][] eigenfaces, double[] desvios) {
-        // Número de eigenfaces (ou o número de componentes principais)
-        int numEigenfaces = eigenfaces[0].length;
 
-        // Vetor para armazenar os pesos
-        double[] pesos = new double[numEigenfaces];
-
-        // Calcular os pesos (produto escalar entre os desvios e cada eigenface)
-        for (int i = 0; i < numEigenfaces; i++) {
-            double peso = 0;
-            for (int j = 0; j < desvios.length; j++) {
-                peso += desvios[j] * eigenfaces[j][i];  // Produto escalar
-            }
-            pesos[i] = peso;
-        }
-
-        return pesos;
-
-
-    }
 
     public static double[][] calcularEigenfaces(double[][] matrizDesvios, double[][] autovetoresATA) {
         int linhas = matrizDesvios.length; // Número de linhas em A
