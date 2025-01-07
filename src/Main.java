@@ -204,7 +204,8 @@ public class Main {
         double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
         Escrita.ImprimirPesos(matrizpesos, x);
 
-        String filePath = "exampleInputFunc1.csv";
+        System.out.println("Indique o nome do ficheiro CSV");
+        String filePath = sc.nextLine();
 
 
         // Ler a matriz do ficheiro
