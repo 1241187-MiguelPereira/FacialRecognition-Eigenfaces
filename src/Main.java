@@ -205,7 +205,7 @@ public class Main {
         Escrita.ImprimirPesos(matrizpesos, x);
 
         System.out.println("Indique o nome do ficheiro CSV");
-        String filePath = sc.nextLine();
+        String filePath = "exemploImagensInputFuncionalidade3/" + sc.nextLine();
 
 
         // Ler a matriz do ficheiro
