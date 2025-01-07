@@ -161,12 +161,17 @@ public class Main {
     }
 
     public static void funcionalidade3() {
-        String pastaImagens = "baseImagens";
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Indique o nome da pasta:");
+
+        String pastaImagens = sc.nextLine();
+
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
 
 
-        Scanner sc = new Scanner(System.in);
+
         System.out.println("Digite o número de eigenfaces a usar:");
         int i = sc.nextInt();
         int x = Validacoes.verificarValoresProprios(colunas, i);
