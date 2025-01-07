@@ -49,9 +49,12 @@ public class Main {
 
 
     public static void funcionalidade1() {
-        String filePath = "exampleInputFunc1.csv";
+
 
         Scanner sc = new Scanner(System.in);
+        System.out.println("Indique o caminho para o ficheiro CSV");
+
+        String filePath = sc.nextLine();
 
 
         // Ler a matriz do ficheiro
@@ -113,7 +116,12 @@ public class Main {
     }
 
     public static void funcionalidade2() throws IOException {
-        String pastaImagens = "baseImagens";
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Indique o nome da pasta:");
+        String pastaImagens = sc.nextLine();
+
+
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
 
@@ -125,7 +133,6 @@ public class Main {
         System.out.println("Imagens lidas com sucesso.");
         System.out.println("Digite o número de eigenfaces a utilizar:");
 
-        Scanner sc = new Scanner(System.in);
         int i = sc.nextInt();
         int x = Validacoes.verificarValoresProprios(colunas, i);
         System.out.println("Numero de eigenfaces: ");

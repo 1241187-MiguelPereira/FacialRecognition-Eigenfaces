@@ -39,7 +39,7 @@ public class Escrita {
                 }
 
                 String nomeImagem = nome + "_" + (coluna + 1) + ".jpg";
-                String caminhoImagem = caminhoOutput + File.separator + nomeImagem;
+                String caminhoImagem = caminhoOutput ;
 
                 double[][] matrizImagemReconstruida = Conversoes.arrayparaMatriz(intimagemReconstruida);
 
