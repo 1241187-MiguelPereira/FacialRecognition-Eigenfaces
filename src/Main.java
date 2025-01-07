@@ -169,41 +169,6 @@ public class Main {
 
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-
-
-
-        System.out.println("Digite o número de eigenfaces a usar:");
-        int i = sc.nextInt();
-        int x = Validacoes.verificarValoresProprios(colunas, i);
-        System.out.println("Número de Eigenfaces/Pesos utilizados na identificação da imagem:");
-        System.out.println(x);
-
-
-        if (matrizImagens != null) {
-            System.out.println("Matriz de imagens construída com sucesso:");
-            //imprimirMatriz(matrizImagens);
-        } else {
-            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
-        }
-        //calcular o vetor com as medias de cada coluna
-        double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
-
-        //calcular o desvio de cada elemento à média
-        double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
-        //calcular A^T.AT
-        double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
-        //transformar numa matriz reconhecivel pela libraria
-        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
-        // calcular os vetores próprios
-        double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
-
-        // calcular as eigenfaces, e armazená-las numa matriz
-        double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
-        double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
-        //UI.imprimirMatriz(normalizados);
-        double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
-        Escrita.ImprimirPesos(matrizpesos, x);
-
         System.out.println("Indique o nome do ficheiro CSV");
         String filePath = "exemploImagensInputFuncionalidade3/" + sc.nextLine();
 
@@ -211,18 +176,53 @@ public class Main {
         // Ler a matriz do ficheiro
         double[][] ImagemAlvo = Leitura.lerMatriz(filePath);
         if (ImagemAlvo == null) {
-            System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
+            System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");}
 
+
+            System.out.println("Digite o número de eigenfaces a usar:");
+            int i = sc.nextInt();
+            int x = Validacoes.verificarValoresProprios(colunas, i);
+            System.out.println("Número de Eigenfaces/Pesos utilizados na identificação da imagem:");
+            System.out.println(x);
+
+
+            if (matrizImagens != null) {
+                System.out.println("Matriz de imagens construída com sucesso:");
+                //imprimirMatriz(matrizImagens);
+            } else {
+                System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+            }
+            //calcular o vetor com as medias de cada coluna
+            double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
+
+            //calcular o desvio de cada elemento à média
+            double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
+            //calcular A^T.AT
+            double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
+            //transformar numa matriz reconhecivel pela libraria
+            RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+            // calcular os vetores próprios
+            double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
+
+            // calcular as eigenfaces, e armazená-las numa matriz
+            double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
+            double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
+            //UI.imprimirMatriz(normalizados);
+            double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
+            Escrita.ImprimirPesos(matrizpesos, x);
+
+
+            double[] vetorAlvo = Conversoes.converterMatrizParaVetor(ImagemAlvo);
+            double[] vetorCentralizado = Calculos.CalculoDoDesvio(vetorMedias, vetorAlvo);
+            double[] vetorPesosAlvo = Calculos.calcularPesosImagemAlvo(vetorCentralizado, normalizados, x);
+            double[] VetorDasDistanciasEuclidianas = Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo, matrizpesos);
+            Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
+            int indice = Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
+            System.out.println("A imagem mais parecida na base de imagens fornecida é:");
+            int numeroAssociadoImagem= (indice*10)+1;
+            System.out.println("image_"+numeroAssociadoImagem+".png");
         }
-        double[] vetorAlvo = Conversoes.converterMatrizParaVetor(ImagemAlvo);
-        double[] vetorCentralizado = Calculos.CalculoDoDesvio(vetorMedias, vetorAlvo);
-        double[] vetorPesosAlvo = Calculos.calcularPesosImagemAlvo(vetorCentralizado, normalizados, x);
-        double[] VetorDasDistanciasEuclidianas = Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo, matrizpesos);
-        Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
-        int indice = Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
 
 
     }
 
-
-}

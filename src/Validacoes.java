@@ -27,6 +27,7 @@ public class Validacoes {
         int indice = 0;
         for (int i = 1; i < vetorDistancias.length; i++) {
             if (vetorDistancias[i] < valor) {
+                valor = vetorDistancias[i];
                 indice = i;
             }
         }

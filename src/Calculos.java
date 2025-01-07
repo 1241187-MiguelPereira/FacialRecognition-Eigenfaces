@@ -301,20 +301,23 @@ public class Calculos {
     }
 
 //--------FUNCIONALIDADE 3 EXCLUSIVAMENTE------------//
-    public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][] omegaBase) {
-        int numVetores = omegaBase.length; // Número de vetores na base
-        double[] distancias = new double[numVetores]; // Vetor para armazenar as distâncias
+public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][] omegaBase) {
+    int numVetores = omegaBase[0].length; // Número de vetores na base (número de colunas)
+    double[] distancias = new double[numVetores]; // Vetor para armazenar as distâncias
 
-        for (int i = 0; i < numVetores; i++) {
-            double soma = 0.0;
-            for (int j = 0; j < omegaNova.length; j++) { // Percorre cada dimensão
-                soma += Math.pow(omegaNova[j] - omegaBase[i][j], 2);
-            }
-            distancias[i] = Math.sqrt(soma); // Calcula a distância euclidiana
+    // Para cada vetor na base (ou seja, cada coluna da matriz)
+    for (int i = 0; i < numVetores; i++) {
+        double soma = 0.0; // Inicializa a soma para calcular a distância
+        for (int j = 0; j < omegaNova.length; j++) { // Para cada dimensão (ou seja, cada linha)
+            soma += Math.pow(omegaNova[j] - omegaBase[j][i], 2); // Soma o quadrado das diferenças
         }
-
-        return distancias;
+        distancias[i] = Math.sqrt(soma); // Calcula a raiz quadrada da soma
     }
+
+    return distancias; // Retorna o vetor de distâncias
+
+
+}
     public static double[] CalculoDoDesvio(double[] vetorColuna, double[] vetorAlvo) {
         int tamanho = vetorColuna.length;
         double[] desvio = new double[tamanho];
