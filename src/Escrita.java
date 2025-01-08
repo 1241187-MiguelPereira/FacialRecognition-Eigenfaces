@@ -4,6 +4,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Escrita {
     public static void exportarMatriz(double[][] matriz) {
@@ -26,7 +27,6 @@ public class Escrita {
             System.err.println("\nErro ao escrever o arquivo CSV: " + e.getMessage());
         }
     }
-
 
 
     public static void guardarImagem(double[][] inputCSV, String caminhoOutput, String nome) {
@@ -52,6 +52,7 @@ public class Escrita {
             System.err.println("Valores de pixeis inválidos no array: " + e.getMessage());
         }
     }
+
     public static void ImprimirPesos(double[][] pesos, int k) {
         for (int i = 0; i < pesos[0].length; i++) {
             System.out.println("Imagem " + (i + 1) + ":");
@@ -71,9 +72,35 @@ public class Escrita {
             System.out.println(); // Salta para a próxima linha
         }
     }
+
     public static void ImprimirVetor(double[] vetor) {
         for (int i = 0; i < vetor.length; i++) {
             System.out.print(vetor[i]);
+        }
+    }
+
+    public static void guardarCSV(double[][] inputCSV, String caminhoOutput, String nome) {
+        int largura = inputCSV[0].length;
+        int dimensaoImagem = 64;
+
+        for (int coluna = 0; coluna < largura; coluna++) {
+            String nomeCSV = nome + "_" + (coluna + 1) + ".csv";
+            String caminhoCSV = caminhoOutput + File.separator + nomeCSV;
+
+            try (PrintWriter printwriter = new PrintWriter(caminhoCSV)) {
+                for (int i = 0; i < dimensaoImagem; i++) {
+                    for (int j = 0; j < dimensaoImagem; j++) {
+                        printwriter.printf("%.2f ", inputCSV[i * dimensaoImagem + j][coluna]);
+                        if (j == dimensaoImagem - 1) {
+                            printwriter.println();
+                        } else {
+                            printwriter.print("; ");
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Erro ao guardar ficheiro CSV: " + e.getMessage());
+            }
         }
     }
 }

@@ -153,11 +153,10 @@ public class Main {
         Escrita.ImprimirPesos(matrizPesos, x);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
 
-        Escrita.guardarImagem(imagensReconstruidas, "src\\outputs\\ImagensReconstruidas", "Imagem");
-        Escrita.exportarMatriz(imagensReconstruidas);
+        Escrita.guardarImagem(imagensReconstruidas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem");
+        Escrita.guardarCSV(imagensReconstruidas,"src\\outputs\\Funcionalidade2\\ImagensReconstruidas","Imagem");
+        Escrita.guardarCSV(normalizados,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface");
 
-        System.out.println("Matriz de imagens construída com sucesso: todas as imagens escritas.");
-        System.out.println("Matriz exportada com sucesso para o arquivo: matrizReconstruida.csv");
     }
 
     public static void funcionalidade3() {
