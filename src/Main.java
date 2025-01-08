@@ -220,6 +220,8 @@ public class Main {
             System.out.println("A imagem mais parecida na base de imagens fornecida é:");
             int numeroAssociadoImagem= (indice*10)+1;
             System.out.println("image_"+numeroAssociadoImagem+".png");
+            double[][] ImagemParecida= Calculos.reconstruirImagens(vetorMedias,normalizados,matrizpesos,x,indice);
+            Escrita.guardarImagem(ImagemParecida,"src/outputs/Funcionalidade3/ImagemMaisParecida","ImagemParecida");
         }
 
 
