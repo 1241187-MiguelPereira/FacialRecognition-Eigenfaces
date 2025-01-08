@@ -343,5 +343,43 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
 
         return pesos;
     }
+    public static double[][] reescalonarEigenfaces(double[][] eigenfaceMatrix) {
+        int rows = eigenfaceMatrix.length;    // Número de linhas (altura das imagens)
+        int cols = eigenfaceMatrix[0].length; // Número de colunas (número de eigenfaces)
+
+        // Criar uma nova matriz para armazenar as eigenfaces ajustadas
+        double[][] normalizedMatrix = new double[rows][cols];
+
+        for (int col = 0; col < cols; col++) {
+            // Extrair a coluna atual (uma eigenface)
+            double[] eigenface = new double[rows];
+            for (int row = 0; row < rows; row++) {
+                eigenface[row] = eigenfaceMatrix[row][col];
+            }
+
+            // Verificar se os valores estão fora do intervalo [0, 255]
+            double minVal = Validacoes.findMin(eigenface);
+            double maxVal = Validacoes.findMax(eigenface);
+
+            if (minVal < 0 || maxVal > 255) {
+                // Se os valores não estiverem entre [0, 255], normalizar
+                eigenface = normalizeTo255(eigenface, minVal, maxVal);
+            }
+
+            // Inserir a eigenface (ajustada ou não) na matriz final
+            for (int row = 0; row < rows; row++) {
+                normalizedMatrix[row][col] = eigenface[row];
+            }
+        }
+
+        return normalizedMatrix;
+    }
+    private static double[] normalizeTo255(double[] array, double minVal, double maxVal) {
+        double[] normalizedArray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            normalizedArray[i] = 255 * (array[i] - minVal) / (maxVal - minVal);
+        }
+        return normalizedArray;
+    }
 
 }
