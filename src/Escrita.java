@@ -39,7 +39,7 @@ public class Escrita {
                 }
 
                 String nomeImagem = nome + "_" + (coluna + 1) + ".jpg";
-                String caminhoImagem = caminhoOutput ;
+                String caminhoImagem = caminhoOutput + File.separator + nomeImagem;
 
                 double[][] matrizImagemReconstruida = Conversoes.arrayparaMatriz(intimagemReconstruida);
 
@@ -52,7 +52,6 @@ public class Escrita {
             System.err.println("Valores de pixeis inválidos no array: " + e.getMessage());
         }
     }
-
     public static void ImprimirPesos(double[][] pesos, int k) {
         for (int i = 0; i < pesos[0].length; i++) {
             System.out.println("Imagem " + (i + 1) + ":");
