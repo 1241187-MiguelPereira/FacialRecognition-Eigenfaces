@@ -155,6 +155,7 @@ public class Main {
         double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
 
+
         double[][] matrizPesos = Calculos.calcularPesos(matrizA, normalizados, x);
         Escrita.ImprimirPesos(matrizPesos, x);
         double[][] eigenRecalibradas = Calculos.reescalonarEigenfaces(normalizados);
@@ -162,6 +163,7 @@ public class Main {
         double[][] imagensRescalonadas = Calculos.reescalonarEigenfaces(imagensReconstruidas);
         int[] indicesDiferentesImagens = Validacoes.compararMatrizes(imagensRescalonadas,imagensReconstruidas);
 
+        System.out.println(normalizados[0].length);
 
         //-----OUTPUTS FUNCIONALIDADE 2-----//
 
@@ -170,7 +172,7 @@ public class Main {
         Escrita.guardarCSV(imagensReconstruidas,"src\\outputs\\Funcionalidade2\\ImagensReconstruidas","Imagem",new int[0]);
         Escrita.guardarCSV(imagensRescalonadas,"src\\outputs\\Funcionalidade2\\ImagensReconstruidas","Imagem_Transformada",indicesDiferentesImagens);
         Escrita.guardarCSV(normalizados,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface_Original",new int[0]);
-        Escrita.guardarCSV(eigenRecalibradas,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface_Transformada",indicesDiferentesImagens);
+        Escrita.guardarCSV(eigenRecalibradas,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface_Transformada",new int[0]);
 
     }
 
