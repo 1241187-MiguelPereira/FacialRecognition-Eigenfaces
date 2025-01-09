@@ -118,11 +118,11 @@ public class Main {
         switch (f) {
             case 1:
                 System.out.println("A executar Funcionalidade 1...");
-                funcionalidade1(i,k);
+                funcionalidade1(i, k);
                 break;
             case 2:
                 System.out.println("A executar Funcionalidade 2...");
-                funcionalidade2(k,d);
+                funcionalidade2(k, d);
                 break;
             case 3:
                 System.out.println("A executar Funcionalidade 3...");
@@ -132,7 +132,6 @@ public class Main {
                 System.out.println("Erro: Funcionalidade inválida.");
         }
     }
-
 
 
     public static void funcionalidade1(String filePath, int k) {
@@ -217,6 +216,7 @@ public class Main {
         double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
         System.out.println("Vetor coluna das médias:");
         Escrita.ImprimirVetor(vetorMedias);
+        int linhas = matrizImagens.length;
 
         double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
         double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
@@ -234,7 +234,6 @@ public class Main {
         double[][] imagensRescalonadas = Calculos.reescalonarEigenfaces(imagensReconstruidas);
         int[] indicesDiferentesImagens = Validacoes.compararMatrizes(imagensRescalonadas, imagensReconstruidas);
 
-        System.out.println(normalizados[0].length);
 
         //-----OUTPUTS FUNCIONALIDADE 2-----//
 
@@ -244,6 +243,8 @@ public class Main {
         Escrita.guardarCSV(imagensRescalonadas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem_Transformada", indicesDiferentesImagens);
         Escrita.guardarCSV(normalizados, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Original", new int[0]);
         Escrita.guardarCSV(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Transformada", new int[0]);
+        double ErroMedio = Calculos.calcularErroAbsolutoMedio(matrizImagens, imagensRescalonadas, colunas, linhas);
+        System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
 
     }
 
