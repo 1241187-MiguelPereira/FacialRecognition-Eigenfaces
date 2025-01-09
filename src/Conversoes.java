@@ -34,7 +34,7 @@ public class Conversoes {
 
         for (int y = 0; y < alturaImagem; y++) {
             for (int x = 0; x < larguraImagem; x++) {
-                int intensidade = Math.abs((int) array[y][x]);
+                int intensidade = ((int) array[y][x]);
                 if (intensidade < 0 || intensidade > 255) {
                     throw new IllegalArgumentException("A intensidade do pixel deve estar entre 0 e 255.");
                 }
