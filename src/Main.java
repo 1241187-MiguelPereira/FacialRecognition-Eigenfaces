@@ -10,10 +10,23 @@ import java.io.FileNotFoundException;
 
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        String escolha;
+    static Scanner sc = new Scanner(System.in);
 
+    public static void main(String[] args) throws IOException {
+
+
+        if (args.length == 0) {
+            System.out.println("Modo Interativo Iniciado.");
+            executarModoInterativo();
+        } else {
+            System.out.println("Modo Não Interativo Iniciado.");
+            executarModoNaoInterativo(args);
+
+        }
+    }
+
+    public static void executarModoInterativo() throws IOException {
+        String escolha;
         do {
             // Exibir menu
             UI.mostrarMenu();
@@ -25,15 +38,31 @@ public class Main {
             // Processar escolha
             switch (escolha) {
                 case "1":
-                    funcionalidade1(); // Funcionalidade 1: Reconstrução de matriz
+                    System.out.println("Indique o caminho para o ficheiro CSV");
+                    String filePath = sc.nextLine();
+                    System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
+                    int k = sc.nextInt();
+                    sc.nextLine();
+                    funcionalidade1(filePath, k); // Funcionalidade 1: Reconstrução de matriz
                     break;
 
                 case "2":
-                    funcionalidade2(); // Funcionalidade 2: Construção da matriz de imagens
+                    System.out.println("Indique o nome da pasta:");
+                    String pastaImagens = sc.nextLine();
+                    System.out.println("Digite o número de eigenfaces a utilizar:");
+                    int i = sc.nextInt();
+
+                    funcionalidade2(i, pastaImagens); // Funcionalidade 2: Construção da matriz de imagens
                     break;
 
                 case "3":
-                    funcionalidade3();
+                    System.out.println("Indique o nome da pasta:");
+                    String PastaImagens = sc.nextLine();
+                    System.out.println("Indique o nome do ficheiro CSV");
+                    String CaminhoFicheiro = "exemploImagensInputFuncionalidade3/" + sc.nextLine();
+                    System.out.println("Digite o número de eigenfaces a usar:");
+                    int e = sc.nextInt();
+                    funcionalidade3(e, PastaImagens, CaminhoFicheiro);
                     break;
 
                 case "END":
@@ -47,14 +76,66 @@ public class Main {
         } while (!escolha.equals("END"));
     }
 
+    public static void executarModoNaoInterativo(String[] args) throws IOException {
+        int f = -1;
+        int k = -1;
+        String i = null;
+        String d = null;
 
-    public static void funcionalidade1() {
+        for (int j = 0; j < args.length; j++) {
+            switch (args[j]) {
+                case "-f":
+                    f = Integer.parseInt(args[++j]);
+                    break;
+                case "-k":
+                    k = Integer.parseInt(args[++j]);
+                    break;
+                case "-i":
+                    i = args[++j];
+                    break;
+                case "-d":
+                    d = args[++j];
+                    break;
+                default:
+                    System.out.println("Parâmetro inválido: " + args[j]);
+                    return;
+            }
+        }
+
+        if (f < 1 || f > 3) {
+            System.out.println("Erro: A funcionalidade (f) deve ser 1, 2 ou 3.");
+            return;
+        }
+        if ((f == 1 || f == 3) && i == null) {
+            System.out.println("Erro: O parâmetro '-i' é obrigatório para as funcionalidades 1 e 3.");
+            return;
+        }
+        if ((f == 2 || f == 3) && d == null) {
+            System.out.println("Erro: O parâmetro '-d' é obrigatório para as funcionalidades 2 e 3.");
+            return;
+        }
+
+        switch (f) {
+            case 1:
+                System.out.println("A executar Funcionalidade 1...");
+                funcionalidade1(i,k);
+                break;
+            case 2:
+                System.out.println("A executar Funcionalidade 2...");
+                funcionalidade2(k,d);
+                break;
+            case 3:
+                System.out.println("A executar Funcionalidade 3...");
+                funcionalidade3(k, d, i);
+                break;
+            default:
+                System.out.println("Erro: Funcionalidade inválida.");
+        }
+    }
 
 
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Indique o caminho para o ficheiro CSV");
 
-        String filePath = sc.nextLine();
+    public static void funcionalidade1(String filePath, int k) {
 
 
         // Ler a matriz do ficheiro
@@ -64,9 +145,6 @@ public class Main {
 
         }
 
-        System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
-        int k = sc.nextInt();
-        sc.nextLine(); // Consumir quebra de linha pendente
 
         // Estabelecer o índice da matriz
         int colunas = matriz[0].length;
@@ -115,11 +193,8 @@ public class Main {
 
     }
 
-    public static void funcionalidade2() throws IOException {
-        Scanner sc = new Scanner(System.in);
+    public static void funcionalidade2(int i, String pastaImagens) throws IOException {
 
-        System.out.println("Indique o nome da pasta:");
-        String pastaImagens = sc.nextLine();
 
         //criação da matrizDeImagens a partir do CSV
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
@@ -130,10 +205,6 @@ public class Main {
             return;
         }
 
-        System.out.println("Imagens lidas com sucesso.");
-        System.out.println("Digite o número de eigenfaces a utilizar:");
-
-        int i = sc.nextInt();
 
         //estabelecer número de EIGENFACES a serem utilizadas
 
@@ -161,33 +232,27 @@ public class Main {
         double[][] eigenRecalibradas = Calculos.reescalonarEigenfaces(normalizados);
         double[][] imagensReconstruidas = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizPesos, x, -1);
         double[][] imagensRescalonadas = Calculos.reescalonarEigenfaces(imagensReconstruidas);
-        int[] indicesDiferentesImagens = Validacoes.compararMatrizes(imagensRescalonadas,imagensReconstruidas);
+        int[] indicesDiferentesImagens = Validacoes.compararMatrizes(imagensRescalonadas, imagensReconstruidas);
 
         System.out.println(normalizados[0].length);
 
         //-----OUTPUTS FUNCIONALIDADE 2-----//
 
         Escrita.guardarImagem(imagensRescalonadas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem");
-        Escrita.guardarImagem(eigenRecalibradas,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface");
-        Escrita.guardarCSV(imagensReconstruidas,"src\\outputs\\Funcionalidade2\\ImagensReconstruidas","Imagem",new int[0]);
-        Escrita.guardarCSV(imagensRescalonadas,"src\\outputs\\Funcionalidade2\\ImagensReconstruidas","Imagem_Transformada",indicesDiferentesImagens);
-        Escrita.guardarCSV(normalizados,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface_Original",new int[0]);
-        Escrita.guardarCSV(eigenRecalibradas,"src\\outputs\\Funcionalidade2\\Eigenfaces","Eigenface_Transformada",new int[0]);
+        Escrita.guardarImagem(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface");
+        Escrita.guardarCSV(imagensReconstruidas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem", new int[0]);
+        Escrita.guardarCSV(imagensRescalonadas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem_Transformada", indicesDiferentesImagens);
+        Escrita.guardarCSV(normalizados, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Original", new int[0]);
+        Escrita.guardarCSV(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Transformada", new int[0]);
 
     }
 
 
-    public static void funcionalidade3() {
-        Scanner sc = new Scanner(System.in);
+    public static void funcionalidade3(int k, String pastaImagens, String filePath) {
 
-        System.out.println("Indique o nome da pasta:");
-
-        String pastaImagens = sc.nextLine();
 
         double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
         int colunas = matrizImagens[0].length;
-        System.out.println("Indique o nome do ficheiro CSV");
-        String filePath = "exemploImagensInputFuncionalidade3/" + sc.nextLine();
 
 
         // Ler a matriz do ficheiro
@@ -197,9 +262,7 @@ public class Main {
         }
 
 
-        System.out.println("Digite o número de eigenfaces a usar:");
-        int i = sc.nextInt();
-        int x = Validacoes.verificarValoresProprios(colunas, i);
+        int x = Validacoes.verificarValoresProprios(colunas, k);
         System.out.println("Número de Eigenfaces/Pesos utilizados na identificação da imagem:");
         System.out.println(x);
 
@@ -242,7 +305,7 @@ public class Main {
         double[][] ImagemParecida = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizpesos, x, indice);
         Escrita.guardarImagem(ImagemParecida, "src/outputs/Funcionalidade3/ImagemMaisParecida", "ImagemParecida");
     }
-
-
+//java -jar out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar -f 2 -k 40 -d "baseImagens"
+//out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar
 }
 
