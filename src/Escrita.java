@@ -7,24 +7,31 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Escrita {
-    public static void exportarMatriz(double[][] matriz) {
-        // Nome do arquivo CSV
-        String nomeArquivo = "matrizReconstruida.csv";
 
-        // Escrever a matriz no arquivo CSV
-        try (FileWriter writer = new FileWriter(nomeArquivo)) {
-            for (int i = 0; i < matriz.length; i++) {
-                for (int j = 0; j < matriz[i].length; j++) {
-                    writer.append(String.format("%.2f", matriz[i][j]));// envia o valor com 2 casas decimais (34,23)
-                    if (j < matriz[i].length - 1) {
-                        writer.append(","); // Adiciona a vírgula entre os valores
+    public static void ExportarMatriz(double[][] Ak, String nome, String outputFolder) {
+        String caminho = outputFolder + "/" + nome;
+        File ficheiro = new File(caminho);
+        int contador = 1;
+
+        while (ficheiro.exists()) {
+            ficheiro = new File(outputFolder + "/" + nome.replace(".csv", "(" + contador + ").csv"));
+            contador++;
+        }
+
+        try (PrintWriter printwriter = new PrintWriter(ficheiro)) {
+            for (int i = 0; i < Ak.length; i++) {
+                for (int j = 0; j < Ak[i].length; j++) {
+                    printwriter.printf("%.2f ", Ak[i][j]);
+                    if (j == Ak[i].length - 1) {
+                        printwriter.printf("");
+                    } else {
+                        printwriter.print("; ");
                     }
                 }
-                writer.append("\n"); // Nova linha após cada linha da matriz
+                printwriter.println();
             }
-            System.out.println("\nMatriz exportada com sucesso para o arquivo: " + nomeArquivo);
         } catch (IOException e) {
-            System.err.println("\nErro ao escrever o arquivo CSV: " + e.getMessage());
+            System.out.println("Erro ao guardar ficheiro CSV: " + e.getMessage());
         }
     }
 
@@ -113,12 +120,13 @@ public class Escrita {
     }
 
 
-public static void ImprimirVetorInt(int[] vetor) {
+    public static void ImprimirVetorInt(int[] vetor) {
         for (int i = 0; i < vetor.length; i++) {
             System.out.print(vetor[i]);
             System.out.print(" ");
         }
     }
+
     public static void imprimirMatriz(double[][] matrix) {
         for (double[] row : matrix) {
             for (double value : row) {

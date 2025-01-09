@@ -192,7 +192,7 @@ public class Main {
         System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
 
         // Exportar matriz reconstruída
-        Escrita.exportarMatriz(reconstruida);
+        Escrita.ExportarMatriz(reconstruida,"matriz_Reconstruida","src\\outputs\\Funcionalidade1\\MatrizReconstruida");
 
 
     }
