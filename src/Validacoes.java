@@ -22,17 +22,28 @@ public class Validacoes {
         return k;
     }
 
-    public static int IndiceDoMenor(double[] vetorDistancias) {
-        double valor = vetorDistancias[0];
-        int indice = 0;
-        for (int i = 1; i < vetorDistancias.length; i++) {
-            if (vetorDistancias[i] < valor) {
-                valor = vetorDistancias[i];
-                indice = i;
+    public static int IndicedoMenor(double[] distancias) {
+        double menorValor = distancias[0];
+        int menorIndice = 0;
+        boolean menorIgual = false;
+
+        for(int i = 1; i < distancias.length; i++) {
+            if(distancias[i] <= menorValor) {
+                if(distancias[i] == menorValor) {
+                    menorIgual = true;
+                } else {
+                    menorIgual = false;
+                    menorValor = distancias[i];
+                    menorIndice = i;
+                }
             }
         }
-        return indice;
 
+        if(menorIgual) {
+            return -1;
+        } else {
+            return menorIndice;
+        }
     }
     public static double findMin(double[] array) {
         double min = Double.MAX_VALUE;

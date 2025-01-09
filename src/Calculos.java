@@ -381,5 +381,10 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
         }
         return normalizedArray;
     }
-
+    public static double[][] RemoverImagemDeUmaMatriz(double[][] matrizImagens,int indice){
+        double [][] imagem = new double[matrizImagens.length][1];
+        for (int i = 0; i < matrizImagens.length; i++) {
+            imagem[i][0] = matrizImagens[i][indice];
+        }return imagem;
+    }
 }

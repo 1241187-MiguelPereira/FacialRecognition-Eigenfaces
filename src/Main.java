@@ -299,12 +299,16 @@ public class Main {
         double[] vetorPesosAlvo = Calculos.calcularPesosImagemAlvo(vetorCentralizado, normalizados, x);
         double[] VetorDasDistanciasEuclidianas = Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo, matrizpesos);
         Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
-        int indice = Validacoes.IndiceDoMenor(VetorDasDistanciasEuclidianas);
-        System.out.println("A imagem mais parecida na base de imagens fornecida é:");
+        int indice = Validacoes.IndicedoMenor(VetorDasDistanciasEuclidianas);
+        double[][] ImagemMaisParecida = Calculos.RemoverImagemDeUmaMatriz(matrizImagens, indice);
+        if (indice == -1) {
+            System.out.print("Ocorreu um empate entre duas ou mais imagens da identificação");
+            Escrita.guardarImagem(matrizImagens, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
+        } else
+            System.out.println("A imagem mais parecida na base de imagens fornecida é:");
         int numeroAssociadoImagem = (indice * 10) + 1;
         System.out.println("image_" + numeroAssociadoImagem + ".png");
-        double[][] ImagemParecida = Calculos.reconstruirImagens(vetorMedias, normalizados, matrizpesos, x, indice);
-        Escrita.guardarImagem(ImagemParecida, "src/outputs/Funcionalidade3/ImagemMaisParecida", "ImagemParecida");
+        Escrita.guardarImagem(ImagemMaisParecida, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
     }
 //java -jar out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar -f 2 -k 40 -d "baseImagens"
 //out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar
