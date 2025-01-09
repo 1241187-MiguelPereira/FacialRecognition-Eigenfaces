@@ -80,7 +80,11 @@ public class Calculos {
         for (int i = 0; i < k; i++) {
             diagonalMatrix[i][i] = sortedEigenvalues[i];
         }
-        return diagonalMatrix;
+        for (int i = 0; i < k; i++) {
+            if ((int)diagonalMatrix[i][i] == -0.00) {
+                diagonalMatrix[i][i] = 0.00;
+            }
+        }return diagonalMatrix;
     }
 
     public static double[][] criarTransposta(double[][] matriz) {
@@ -164,10 +168,6 @@ public class Calculos {
     }
 
 
-
-
-
-
     public static double[][] MatrizdasCovarianciasTeorema(double[][] matrizDosDesvios) {
         int linhas = matrizDosDesvios.length;
         int colunas = matrizDosDesvios[0].length;
@@ -192,7 +192,6 @@ public class Calculos {
 
         return matrizLinha;
     }
-
 
 
     public static double[][] calcularEigenfaces(double[][] matrizDesvios, double[][] autovetoresATA) {
@@ -300,24 +299,25 @@ public class Calculos {
         }
     }
 
-//--------FUNCIONALIDADE 3 EXCLUSIVAMENTE------------//
-public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][] omegaBase) {
-    int numVetores = omegaBase[0].length; // Número de vetores na base (número de colunas)
-    double[] distancias = new double[numVetores]; // Vetor para armazenar as distâncias
+    //--------FUNCIONALIDADE 3 EXCLUSIVAMENTE------------//
+    public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][] omegaBase) {
+        int numVetores = omegaBase[0].length; // Número de vetores na base (número de colunas)
+        double[] distancias = new double[numVetores]; // Vetor para armazenar as distâncias
 
-    // Para cada vetor na base (ou seja, cada coluna da matriz)
-    for (int i = 0; i < numVetores; i++) {
-        double soma = 0.0; // Inicializa a soma para calcular a distância
-        for (int j = 0; j < omegaNova.length; j++) { // Para cada dimensão (ou seja, cada linha)
-            soma += Math.pow(omegaNova[j] - omegaBase[j][i], 2); // Soma o quadrado das diferenças
+        // Para cada vetor na base (ou seja, cada coluna da matriz)
+        for (int i = 0; i < numVetores; i++) {
+            double soma = 0.0; // Inicializa a soma para calcular a distância
+            for (int j = 0; j < omegaNova.length; j++) { // Para cada dimensão (ou seja, cada linha)
+                soma += Math.pow(omegaNova[j] - omegaBase[j][i], 2); // Soma o quadrado das diferenças
+            }
+            distancias[i] = Math.sqrt(soma); // Calcula a raiz quadrada da soma
         }
-        distancias[i] = Math.sqrt(soma); // Calcula a raiz quadrada da soma
+
+        return distancias; // Retorna o vetor de distâncias
+
+
     }
 
-    return distancias; // Retorna o vetor de distâncias
-
-
-}
     public static double[] CalculoDoDesvio(double[] vetorColuna, double[] vetorAlvo) {
         int tamanho = vetorColuna.length;
         double[] desvio = new double[tamanho];
@@ -328,6 +328,7 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
 
         return desvio;
     }
+
     public static double[] calcularPesosImagemAlvo(double[] imagemAlvo, double[][] eigenfaces, int k) {
         // Criamos uma array para armazenar os pesos da imagem alvo
         double[] pesos = new double[k];
@@ -343,6 +344,7 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
 
         return pesos;
     }
+
     public static double[][] reescalonarEigenfaces(double[][] eigenfaceMatrix) {
         int rows = eigenfaceMatrix.length;    // Número de linhas (altura das imagens)
         int cols = eigenfaceMatrix[0].length; // Número de colunas (número de eigenfaces)
@@ -374,6 +376,7 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
 
         return normalizedMatrix;
     }
+
     private static double[] normalizeTo255(double[] array, double minVal, double maxVal) {
         double[] normalizedArray = new double[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -381,10 +384,46 @@ public static double[] calcularDistanciaEuclidiana(double[] omegaNova, double[][
         }
         return normalizedArray;
     }
-    public static double[][] RemoverImagemDeUmaMatriz(double[][] matrizImagens,int indice){
-        double [][] imagem = new double[matrizImagens.length][1];
+
+    public static double[][] RemoverImagemDeUmaMatriz(double[][] matrizImagens, int indice) {
+        double[][] imagem = new double[matrizImagens.length][1];
         for (int i = 0; i < matrizImagens.length; i++) {
             imagem[i][0] = matrizImagens[i][indice];
-        }return imagem;
+        }
+        return imagem;
     }
+
+    //                           ----FUNCIONALIDADE 4------
+
+    public static double[][] gerarImagem(double[] media, double[][] valoresProprios, double[][] vetoresPropriosNormalizados, int k) {
+        double min;
+        double max;
+        double w;
+
+        double[][] imagemGerada = new double[media.length][1];
+        double[][] mult = new double[media.length][1];
+
+        // Inicializa imagemGerada com os valores do vetor media
+        for (int i = 0; i < media.length; i++) {
+            imagemGerada[i][0] = media[i];
+        }
+
+        for (int i = 0; i < k; i++) {
+            min = -(Math.sqrt(valoresProprios[i][i]));
+            max = Math.sqrt(valoresProprios[i][i]);
+
+            w = Math.random() * (max - min) + min;
+
+            for (int j = 0; j < media.length; j++) {
+                mult[j][0] = w * vetoresPropriosNormalizados[j][i];
+            }
+
+            for (int p = 0; p < media.length; p++) {
+                imagemGerada[p][0] += mult[p][0];
+            }
+        }
+
+        return imagemGerada;
+    }
+
 }

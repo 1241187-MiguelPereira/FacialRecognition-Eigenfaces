@@ -64,14 +64,19 @@ public class Main {
                     int e = sc.nextInt();
                     funcionalidade3(e, PastaImagens, CaminhoFicheiro);
                     break;
-
+                case "4":
+                    System.out.println("Indique o nome da pasta:");
+                    String BaseDeImagens = sc.nextLine();
+                    System.out.println("Digite o número de eigenfaces a usar:");
+                    int f = sc.nextInt();
+                    funcionalidade4(BaseDeImagens, f);
                 case "END":
                     System.out.println("Programa encerrado. Obrigado!");
                     break;
 
                 default:
                     System.out.println("Opção inválida. Por favor, tente novamente.");
-                    break;
+
             }
         } while (!escolha.equals("END"));
     }
@@ -102,7 +107,7 @@ public class Main {
             }
         }
 
-        if (f < 1 || f > 3) {
+        if (f < 1 || f > 4) {
             System.out.println("Erro: A funcionalidade (f) deve ser 1, 2 ou 3.");
             return;
         }
@@ -110,7 +115,7 @@ public class Main {
             System.out.println("Erro: O parâmetro '-i' é obrigatório para as funcionalidades 1 e 3.");
             return;
         }
-        if ((f == 2 || f == 3) && d == null) {
+        if ((f == 2 || f == 3 || f == 4) && d == null) {
             System.out.println("Erro: O parâmetro '-d' é obrigatório para as funcionalidades 2 e 3.");
             return;
         }
@@ -175,13 +180,13 @@ public class Main {
 
         // Exibir resultados
         System.out.println("Matriz reconstruída:");
-        UI.imprimirMatriz(reconstruida);
+        Escrita.imprimirMatriz(reconstruida);
 
         System.out.println("Número de valores utilizados: " + k);
         System.out.println("Matriz dos vetores:");
-        UI.imprimirMatriz(matrizP);
+        Escrita.imprimirMatriz(matrizP);
         System.out.println("Matriz dos valores:");
-        UI.imprimirMatriz(matrizD);
+        Escrita.imprimirMatriz(matrizD);
 
         double ErroMedio = Calculos.calcularErroAbsolutoMedio(matriz, reconstruida, colunas, linhas);
         System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
@@ -309,6 +314,44 @@ public class Main {
         int numeroAssociadoImagem = (indice * 10) + 1;
         System.out.println("image_" + numeroAssociadoImagem + ".png");
         Escrita.guardarImagem(ImagemMaisParecida, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
+    }
+
+    public static void funcionalidade4(String pastaImagens, int k) {
+
+        //criação da matrizDeImagens a partir do CSV
+        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
+        int colunas = matrizImagens[0].length;
+
+        if (matrizImagens == null) {
+            System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
+            return;
+        }
+
+
+        //estabelecer número de EIGENFACES a serem utilizadas
+
+        int x = Validacoes.verificarValoresProprios(colunas, k);
+
+        //estabelecer vetor com as médias
+
+        double[] vetorMedias = Calculos.VetorLinhaMedias(matrizImagens);
+        int linhas = matrizImagens.length;
+
+        double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
+        double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
+
+
+        RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
+        double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
+        double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
+        double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
+        double[][] valoresproprios = Calculos.getEigenvalueDiagonal(matrizCovReal, x);
+        Escrita.imprimirMatriz(valoresproprios);
+        double[][] imagemGerada = Calculos.gerarImagem(vetorMedias, valoresproprios, normalizados, x);
+        double[][] imagemRescalonada = Calculos.reescalonarEigenfaces(imagemGerada);
+        Escrita.guardarImagem(imagemRescalonada, "src/outputs/Funcionalidade4/ImagemGerada", "ImagemGerada");
+
+
     }
 //java -jar out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar -f 2 -k 40 -d "baseImagens"
 //out\artifacts\lapr1_24_25_DIJ_10_jar\lapr1-24-25_DIJ_10.jar

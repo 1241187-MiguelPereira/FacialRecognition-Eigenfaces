@@ -120,7 +120,7 @@ public class mainTest {
 
         // Chamando o método de impressão da matriz
         System.out.println("Imprimindo a matriz de teste:");
-        UI.imprimirMatriz(matrizTeste);
+        Escrita.imprimirMatriz(matrizTeste);
     }
 
     public static void testVetorLinhaMedias() {

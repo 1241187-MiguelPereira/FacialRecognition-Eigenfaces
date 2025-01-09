@@ -119,7 +119,16 @@ public static void ImprimirVetorInt(int[] vetor) {
             System.out.print(" ");
         }
     }
+    public static void imprimirMatriz(double[][] matrix) {
+        for (double[] row : matrix) {
+            for (double value : row) {
+                System.out.printf("%8.2f ", value);
+            }
+            System.out.println();
+        }
+    }
 
 }
+
 
 
