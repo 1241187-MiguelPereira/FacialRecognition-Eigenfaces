@@ -8,32 +8,41 @@ import java.io.PrintWriter;
 
 public class Escrita {
 
-    public static void ExportarMatriz(double[][] Ak, String nome, String outputFolder) {
+    public static void guardarMatriz(double[][] Ak, String nome, String outputFolder) {
+        // Garante que o nome termina em ".csv"
+        if (!nome.endsWith(".csv")) {
+            nome += ".csv";
+        }
+
         String caminho = outputFolder + "/" + nome;
         File ficheiro = new File(caminho);
         int contador = 1;
 
+        // Gera um nome único caso o arquivo já exista
         while (ficheiro.exists()) {
-            ficheiro = new File(outputFolder + "/" + nome.replace(".csv", "(" + contador + ").csv"));
+            String novoNome = nome.replace(".csv", "(" + contador + ").csv");
+            caminho = outputFolder + "/" + novoNome;
+            ficheiro = new File(caminho);
             contador++;
         }
 
+        // Escreve a matriz no arquivo CSV
         try (PrintWriter printwriter = new PrintWriter(ficheiro)) {
             for (int i = 0; i < Ak.length; i++) {
                 for (int j = 0; j < Ak[i].length; j++) {
-                    printwriter.printf("%.2f ", Ak[i][j]);
-                    if (j == Ak[i].length - 1) {
-                        printwriter.printf("");
-                    } else {
-                        printwriter.print("; ");
+                    printwriter.printf("%.2f", Ak[i][j]); // Formata com 2 casas decimais
+                    if (j < Ak[i].length - 1) {
+                        printwriter.print("; "); // Adiciona ";" entre os valores
                     }
                 }
-                printwriter.println();
+                printwriter.println(); // Nova linha para cada linha da matriz
             }
+            System.out.println("Ficheiro CSV guardado com sucesso em: " + caminho);
         } catch (IOException e) {
             System.out.println("Erro ao guardar ficheiro CSV: " + e.getMessage());
         }
     }
+
 
 
     public static void guardarImagem(double[][] inputCSV, String caminhoOutput, String nome) {
