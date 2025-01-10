@@ -56,7 +56,7 @@ public class Escrita {
                 String nomeImagem = nome + "_" + (coluna + 1) + ".jpg";
                 String caminhoImagem = caminhoOutput + File.separator + nomeImagem;
 
-                double[][] matrizImagemReconstruida = Conversoes.arrayparaMatriz(intimagemReconstruida);
+                double[][] matrizImagemReconstruida = Conversoes.arrayparaMatriz(intimagemReconstruida,inputCSV);
 
                 Conversoes.escreverArraycomoImagem(matrizImagemReconstruida, caminhoImagem);
                 System.out.println("Imagem " + (coluna + 1) + " escrita com sucesso em: " + caminhoImagem);
@@ -101,7 +101,7 @@ public class Escrita {
         }
 
         int largura = inputCSV[0].length; // Número de colunas
-        int dimensaoImagem = 64;         // Dimensão da imagem (assumindo 64x64)
+        int dimensaoImagem = (int)Math.sqrt(inputCSV.length) ;         // Dimensão da imagem
 
         // Verificar se o array de índices está vazio (ou seja, guardar todas as colunas)
         boolean salvarTudo = (indices[0] == -1);

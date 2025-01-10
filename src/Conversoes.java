@@ -46,9 +46,9 @@ public class Conversoes {
         ImageIO.write(imagem, "jpg", outputFile);
     }
 
-    public static double[][] arrayparaMatriz(int[][] array) {
-        int colunas = 64;
-        int linhas = 64;
+    public static double[][] arrayparaMatriz(int[][] array,double [][] matrizImagens) {
+        int colunas = (int)Math.sqrt(matrizImagens.length);
+        int linhas = (int)Math.sqrt(matrizImagens.length);
         if (array.length != linhas * colunas) {
             throw new IllegalArgumentException("O vetor não equivale às dimensões da matriz");
         }
