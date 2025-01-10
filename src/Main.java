@@ -245,14 +245,16 @@ public class Main {
         int[] indicesDiferentesImagens = Validacoes.compararMatrizes(imagensRescalonadas, imagensReconstruidas);
 
 
-        //-----OUTPUTS FUNCIONALIDADE 2-----//
 
+        //-----OUTPUTS FUNCIONALIDADE 2-----//
+        int[] outputCsv = new int[1];
+        outputCsv[0] = -1;
         Escrita.guardarImagem(imagensRescalonadas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem");
         Escrita.guardarImagem(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface");
-        Escrita.guardarCSV(imagensReconstruidas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem", new int[0]);
+        Escrita.guardarCSV(imagensReconstruidas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem", outputCsv);
         Escrita.guardarCSV(imagensRescalonadas, "src\\outputs\\Funcionalidade2\\ImagensReconstruidas", "Imagem_Transformada", indicesDiferentesImagens);
-        Escrita.guardarCSV(normalizados, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Original", new int[0]);
-        Escrita.guardarCSV(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Transformada", new int[0]);
+        Escrita.guardarCSV(normalizados, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Original", outputCsv);
+        Escrita.guardarCSV(eigenRecalibradas, "src\\outputs\\Funcionalidade2\\Eigenfaces", "Eigenface_Transformada", outputCsv);
         double ErroMedio = Calculos.calcularErroAbsolutoMedio(matrizImagens, imagensRescalonadas, colunas, linhas);
         System.out.printf("Erro Absoluto Médio: %.2f\n", ErroMedio);
 
