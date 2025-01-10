@@ -43,7 +43,7 @@ public class Main {
                     System.out.println("Digite o número de valores próprios a utilizar na reconstrução da matriz:");
                     int k = sc.nextInt();
                     sc.nextLine();
-                    funcionalidade1(filePath, k); // Funcionalidade 1: Reconstrução de matriz
+                    funcionalidade1(filePath, k);// Funcionalidade 1: Reconstrução de matriz
                     break;
 
                 case "2":
@@ -51,6 +51,7 @@ public class Main {
                     String pastaImagens = sc.nextLine();
                     System.out.println("Digite o número de eigenfaces a utilizar:");
                     int i = sc.nextInt();
+                    sc.nextLine();
 
                     funcionalidade2(i, pastaImagens); // Funcionalidade 2: Construção da matriz de imagens
                     break;
@@ -62,6 +63,7 @@ public class Main {
                     String CaminhoFicheiro = "exemploImagensInputFuncionalidade3/" + sc.nextLine();
                     System.out.println("Digite o número de eigenfaces a usar:");
                     int e = sc.nextInt();
+                    sc.nextLine();
                     funcionalidade3(e, PastaImagens, CaminhoFicheiro);
                     break;
                 case "4":
@@ -69,7 +71,9 @@ public class Main {
                     String BaseDeImagens = sc.nextLine();
                     System.out.println("Digite o número de eigenfaces a usar:");
                     int f = sc.nextInt();
+                    sc.nextLine();
                     funcionalidade4(BaseDeImagens, f);
+                    break;
                 case "END":
                     System.out.println("Programa encerrado. Obrigado!");
                     break;
@@ -193,6 +197,7 @@ public class Main {
 
         // Exportar matriz reconstruída
         Escrita.ExportarMatriz(reconstruida,"matriz_Reconstruida","src\\outputs\\Funcionalidade1\\MatrizReconstruida");
+
 
 
     }
