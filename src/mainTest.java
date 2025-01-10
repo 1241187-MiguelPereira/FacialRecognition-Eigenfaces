@@ -12,6 +12,7 @@ public class mainTest {
         testMatrizColunaDosVetoresProprios();
         testCalcularEigenfaces();
         testNormalizeEigenfaces();
+        testCalcularPesosImagemAlvo();
     }
 
     public static void testIsSymmetric() {
@@ -268,8 +269,47 @@ public class mainTest {
     }
 
 
+    //calcular pesos imagem alvo
 
+
+    public static void testCalcularPesosImagemAlvo() {
+        System.out.println("Testando calcularPesosImagemAlvo...");
+
+        double[] imagemAlvo = {1.0, 2.0, 3.0};
+        double[][] eigenfaces = {
+                {0.5, 0.2},
+                {0.4, 0.1},
+                {0.3, 0.4}
+        };
+        int k = 2;
+
+        double[] expected = {2.2, 1.6}; // Valores esperados
+
+        double[] result = Calculos.calcularPesosImagemAlvo(imagemAlvo, eigenfaces, k);
+
+        // Definir uma tolerância para comparação
+        double tolerance = 1e-6;
+
+        boolean passed = true;
+
+        for (int i = 0; i < expected.length; i++) {
+            if (Math.abs(result[i] - expected[i]) > tolerance) {
+                passed = false;
+                System.out.println("Falha na comparação do peso [" + i + "]. Esperado: "
+                        + expected[i] + ", mas obtido: " + result[i]);
+            }
+        }
+
+        if (passed) {
+            System.out.println("calcularPesosImagemAlvo passou no teste.");
+        } else {
+            System.out.println("calcularPesosImagemAlvo falhou no teste.");
+        }
     }
+
+
+
+}
 
 
 
