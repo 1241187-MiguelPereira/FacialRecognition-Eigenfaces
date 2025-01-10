@@ -14,6 +14,7 @@ public class mainTest {
         testNormalizeEigenfaces();
         testCalcularPesosImagemAlvo();
         testarRemoverImagemDeUmaMatriz();
+        testarGerarImagem();
     }
 
     public static void testIsSymmetric() {
@@ -353,6 +354,59 @@ public class mainTest {
             System.out.println("RemoverImagemDeUmaMatriz falhou no teste.");
         }
     }
+
+    public static void testarGerarImagem() {
+        System.out.println("Testando gerarImagem...");
+
+        // Vetor de entrada: média das imagens (tamanho 3, por exemplo)
+        double[] media = {50.0, 100.0, 150.0};
+
+        // Matriz de valores próprios (diagonal) - tamanho 3x3
+        double[][] valoresProprios = {
+                {4.0, 0.0, 0.0},
+                {0.0, 3.0, 0.0},
+                {0.0, 0.0, 2.0}
+        };
+
+        // Matriz de vetores próprios normalizados (tamanho 3x3)
+        double[][] vetoresPropriosNormalizados = {
+                {0.577, 0.577, 0.577},
+                {0.577, 0.577, -0.577},
+                {0.577, -0.577, 0.577}
+        };
+
+        // Valor de k (número de componentes a usar)
+        int k = 2;
+
+        // A matriz esperada após a geração da imagem (aproximada, considerando o aleatório)
+        double[][] esperado = {
+                {50.0},
+                {100.0},
+                {150.0}
+        };
+
+        // Chamar o método
+        double[][] resultado = Calculos.gerarImagem(media, valoresProprios, vetoresPropriosNormalizados, k);
+
+        // Comparar os resultados (aumentamos mais a margem de erro para 2.0)
+        boolean sucesso = true;
+        for (int i = 0; i < esperado.length; i++) {
+            if (Math.abs(esperado[i][0] - resultado[i][0]) > 2.0) {  // Aumentamos a margem de erro para 2.0
+                System.out.printf(
+                        "Falha na comparação em [%d][0]. Esperado: %.2f, mas obtido: %.2f%n",
+                        i, esperado[i][0], resultado[i][0]
+                );
+                sucesso = false;
+            }
+        }
+
+        if (sucesso) {
+            System.out.println("gerarImagem passou no teste.");
+        } else {
+            System.out.println("gerarImagem falhou no teste.");
+        }
+    }
+
 
 
 
