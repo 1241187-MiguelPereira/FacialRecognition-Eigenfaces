@@ -13,6 +13,7 @@ public class mainTest {
         testCalcularEigenfaces();
         testNormalizeEigenfaces();
         testCalcularPesosImagemAlvo();
+        testarRemoverImagemDeUmaMatriz();
     }
 
     public static void testIsSymmetric() {
@@ -306,6 +307,53 @@ public class mainTest {
             System.out.println("calcularPesosImagemAlvo falhou no teste.");
         }
     }
+
+    //Remover Imagem de uma Matriz
+
+    public static void testarRemoverImagemDeUmaMatriz() {
+        System.out.println("Testando RemoverImagemDeUmaMatriz...");
+
+        // Matriz de entrada com 3 imagens (colunas) e 3 pixels (linhas)
+        double[][] matrizImagens = {
+                {1.0, 2.0, 3.0},
+                {4.0, 5.0, 6.0},
+                {7.0, 8.0, 9.0}
+        };
+
+        // O índice da imagem que queremos remover (por exemplo, a imagem na coluna 1)
+        int indice = 1;
+
+        // A matriz esperada após remover a imagem na coluna 1
+        double[][] esperado = {
+                {2.0},
+                {5.0},
+                {8.0}
+        };
+
+        // Chamar o método
+        double[][] resultado = Calculos.RemoverImagemDeUmaMatriz(matrizImagens, indice);
+
+        // Comparar os resultados
+        boolean sucesso = true;
+        for (int i = 0; i < esperado.length; i++) {
+            for (int j = 0; j < esperado[0].length; j++) {
+                if (Math.abs(esperado[i][j] - resultado[i][j]) > 0.01) {
+                    System.out.printf(
+                            "Falha na comparação em [%d][%d]. Esperado: %.2f, mas obtido: %.2f%n",
+                            i, j, esperado[i][j], resultado[i][j]
+                    );
+                    sucesso = false;
+                }
+            }
+        }
+
+        if (sucesso) {
+            System.out.println("RemoverImagemDeUmaMatriz passou no teste.");
+        } else {
+            System.out.println("RemoverImagemDeUmaMatriz falhou no teste.");
+        }
+    }
+
 
 
 
