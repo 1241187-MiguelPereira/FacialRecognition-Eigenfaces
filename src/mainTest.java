@@ -24,6 +24,8 @@ public class mainTest {
         testCalcularDistanciaEuclidiana();
         testConverterMatrizParaVetor();
         testEscreverArraycomoImagem();
+        testArrayparaMatriz();
+
 
     }
 
@@ -969,6 +971,59 @@ public class mainTest {
 
         } catch (Exception e) {
             System.out.println("escreverArraycomoImagem falhou no teste devido a uma exceção inesperada: " + e.getMessage());
+        }
+    }
+    public static void testArrayparaMatriz() {
+        System.out.println("Testando arrayparaMatriz...");
+
+        try {
+            // Teste com array e matriz válidos
+            int[][] arrayValido = {
+                    {1}, {2}, {3},
+                    {4}, {5}, {6},
+                    {7}, {8}, {9}
+            };
+
+            double[][] matrizImagens = new double[9][1]; // Deve resultar em uma matriz 3x3
+            double[][] matrizEsperada = {
+                    {1.0, 2.0, 3.0},
+                    {4.0, 5.0, 6.0},
+                    {7.0, 8.0, 9.0}
+            };
+
+            double[][] matrizResultado = Conversoes.arrayparaMatriz(arrayValido, matrizImagens);
+
+            boolean passou = true;
+            for (int i = 0; i < matrizEsperada.length; i++) {
+                for (int j = 0; j < matrizEsperada[0].length; j++) {
+                    if (Math.abs(matrizResultado[i][j] - matrizEsperada[i][j]) > 0.001) {
+                        passou = false;
+                        break;
+                    }
+                }
+            }
+
+            if (passou) {
+                System.out.println("arrayparaMatriz passou no teste com array e matriz válidos.");
+            } else {
+                System.out.println("arrayparaMatriz falhou no teste com array e matriz válidos.");
+            }
+
+            // Teste com array incompatível com a matriz
+            int[][] arrayInvalido = {
+                    {1}, {2}, {3},
+                    {4}, {5}, {6}
+            };
+
+            try {
+                Conversoes.arrayparaMatriz(arrayInvalido, matrizImagens);
+                System.out.println("arrayparaMatriz falhou no teste com array inválido (não lançou exceção).");
+            } catch (IllegalArgumentException e) {
+                System.out.println("arrayparaMatriz passou no teste com array inválido (exceção lançada corretamente).");
+            }
+
+        } catch (Exception e) {
+            System.out.println("arrayparaMatriz falhou no teste devido a uma exceção inesperada: " + e.getMessage());
         }
     }
 
