@@ -26,6 +26,8 @@ public class mainTest {
         testEscreverArraycomoImagem();
         testArrayparaMatriz();
         testVerificarValoresProprios();
+        testIndicedoMenor();
+
 
 
 
@@ -1080,6 +1082,58 @@ public class mainTest {
         }
     }
 
+    public static void testIndicedoMenor() {
+        System.out.println("Testando IndicedoMenor...");
+
+        try {
+            // Teste com valores distintos
+            double[] distancias1 = {10.5, 8.3, 7.2, 9.0};
+            int resultadoEsperado1 = 2; // O menor valor está no índice 2 (7.2)
+            int resultado1 = Validacoes.IndicedoMenor(distancias1);
+
+            if (resultado1 == resultadoEsperado1) {
+                System.out.println("IndicedoMenor passou no teste com valores distintos.");
+            } else {
+                System.out.println("IndicedoMenor falhou no teste com valores distintos. Resultado: " + resultado1);
+            }
+
+            // Teste com valores iguais
+            double[] distancias2 = {5.0, 3.0, 3.0, 4.5};
+            int resultadoEsperado2 = -1; // Há dois menores valores iguais (índices 1 e 2)
+            int resultado2 = Validacoes.IndicedoMenor(distancias2);
+
+            if (resultado2 == resultadoEsperado2) {
+                System.out.println("IndicedoMenor passou no teste com valores iguais.");
+            } else {
+                System.out.println("IndicedoMenor falhou no teste com valores iguais. Resultado: " + resultado2);
+            }
+
+            // Teste com um único valor no array
+            double[] distancias3 = {42.0};
+            int resultadoEsperado3 = 0; // Apenas um valor, então o índice é 0
+            int resultado3 = Validacoes.IndicedoMenor(distancias3);
+
+            if (resultado3 == resultadoEsperado3) {
+                System.out.println("IndicedoMenor passou no teste com um único valor.");
+            } else {
+                System.out.println("IndicedoMenor falhou no teste com um único valor. Resultado: " + resultado3);
+            }
+
+            // Teste com valores todos iguais
+            double[] distancias4 = {7.0, 7.0, 7.0};
+            int resultadoEsperado4 = -1; // Todos os valores são iguais
+            int resultado4 = Validacoes.IndicedoMenor(distancias4);
+
+            if (resultado4 == resultadoEsperado4) {
+                System.out.println("IndicedoMenor passou no teste com valores todos iguais.");
+            } else {
+                System.out.println("IndicedoMenor falhou no teste com valores todos iguais. Resultado: " + resultado4);
+            }
+
+        } catch (Exception e) {
+            System.out.println("IndicedoMenor falhou no teste devido a uma exceção inesperada: " + e.getMessage());
+        }
+    }
 
 
 }
