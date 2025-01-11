@@ -15,6 +15,12 @@ public class mainTest {
         testCalcularPesosImagemAlvo();
         testarRemoverImagemDeUmaMatriz();
         testarGerarImagem();
+        testCriarTransposta();
+        testGetEigenvalueDiagonal();
+        testMultiplicarMatrizPorVetor();
+        testCalcularPesos();
+        testReconstruirImagens();
+        testCalcularDistanciaEuclidiana();
     }
 
     public static void testIsSymmetric() {
@@ -407,10 +413,465 @@ public class mainTest {
         }
     }
 
+    public static void testCriarTransposta() {
+        System.out.println("Testando criarTransposta...");
 
+        // Caso 1: Matriz quadrada
+        double[][] matrizQuadrada = {
+                {1.0, 2.0, 3.0},
+                {4.0, 5.0, 6.0},
+                {7.0, 8.0, 9.0}
+        };
+        double[][] esperadoQuadrada = {
+                {1.0, 4.0, 7.0},
+                {2.0, 5.0, 8.0},
+                {3.0, 6.0, 9.0}
+        };
+        double[][] resultadoQuadrada = Calculos.criarTransposta(matrizQuadrada);
+        boolean passouQuadrada = true;
+        for (int i = 0; i < esperadoQuadrada.length; i++) {
+            for (int j = 0; j < esperadoQuadrada[i].length; j++) {
+                if (resultadoQuadrada[i][j] != esperadoQuadrada[i][j]) {
+                    passouQuadrada = false;
+                    break;
+                }
+            }
+        }
+        if (passouQuadrada) {
+            System.out.println("criarTransposta passou no teste com matriz quadrada.");
+        } else {
+            System.out.println("criarTransposta falhou no teste com matriz quadrada.");
+        }
 
+        // Caso 2: Matriz retangular (mais linhas que colunas)
+        double[][] matrizMaisLinhas = {
+                {1.0, 2.0},
+                {3.0, 4.0},
+                {5.0, 6.0}
+        };
+        double[][] esperadoMaisLinhas = {
+                {1.0, 3.0, 5.0},
+                {2.0, 4.0, 6.0}
+        };
+        double[][] resultadoMaisLinhas = Calculos.criarTransposta(matrizMaisLinhas);
+        boolean passouMaisLinhas = true;
+        for (int i = 0; i < esperadoMaisLinhas.length; i++) {
+            for (int j = 0; j < esperadoMaisLinhas[i].length; j++) {
+                if (resultadoMaisLinhas[i][j] != esperadoMaisLinhas[i][j]) {
+                    passouMaisLinhas = false;
+                    break;
+                }
+            }
+        }
+        if (passouMaisLinhas) {
+            System.out.println("criarTransposta passou no teste com matriz retangular (mais linhas).");
+        } else {
+            System.out.println("criarTransposta falhou no teste com matriz retangular (mais linhas).");
+        }
 
+        // Caso 3: Matriz vazia
+        double[][] matrizVazia = new double[0][0];
+        double[][] resultadoVazia = Calculos.criarTransposta(matrizVazia);
+        boolean passouVazia = resultadoVazia.length == 0;
+        if (passouVazia) {
+            System.out.println("criarTransposta passou no teste com matriz vazia.");
+        } else {
+            System.out.println("criarTransposta falhou no teste com matriz vazia.");
+        }
+    }
 
+    public static void testGetEigenvalueDiagonal() {
+        System.out.println("Testando getEigenvalueDiagonal...");
+
+        // Caso 1: Matriz 2x2 com valores próprios simples
+        RealMatrix matriz2x2 = MatrixUtils.createRealMatrix(new double[][]{
+                {2.0, 0.0},
+                {0.0, 3.0}
+        });
+        double[][] esperado2x2 = {
+                {3.0, 0.0},
+                {0.0, 2.0}
+        };
+        double[][] resultado2x2 = Calculos.getEigenvalueDiagonal(matriz2x2, 2);
+        boolean passou2x2 = true;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                if (resultado2x2[i][j] != esperado2x2[i][j]) {
+                    passou2x2 = false;
+                    break;
+                }
+            }
+        }
+        if (passou2x2) {
+            System.out.println("getEigenvalueDiagonal passou no teste com matriz 2x2.");
+        } else {
+            System.out.println("getEigenvalueDiagonal falhou no teste com matriz 2x2.");
+        }
+
+        // Caso 2: Matriz 3x3 com valores próprios conhecidos
+        RealMatrix matriz3x3 = MatrixUtils.createRealMatrix(new double[][]{
+                {6.0, 2.0, 1.0},
+                {2.0, 3.0, 1.0},
+                {1.0, 1.0, 1.0}
+        });
+        double[][] esperado3x3 = {
+                {7.0, 0.0, 0.0},
+                {0.0, 2.0, 0.0},
+                {0.0, 0.0, 1.0}
+        };
+        double[][] resultado3x3 = Calculos.getEigenvalueDiagonal(matriz3x3, 3);
+        boolean passou3x3 = true;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (resultado3x3[i][j] != esperado3x3[i][j]) {
+                    passou3x3 = false;
+                    break;
+                }
+            }
+        }
+        if (passou3x3) {
+            System.out.println("getEigenvalueDiagonal passou no teste com matriz 3x3.");
+        } else {
+            System.out.println("getEigenvalueDiagonal falhou no teste com matriz 3x3.");
+        }
+
+        // Caso 3: Matriz identidade 3x3
+        RealMatrix matrizIdentidade = MatrixUtils.createRealIdentityMatrix(3);
+        double[][] esperadoIdentidade = {
+                {1.0, 0.0, 0.0},
+                {0.0, 1.0, 0.0},
+                {0.0, 0.0, 1.0}
+        };
+        double[][] resultadoIdentidade = Calculos.getEigenvalueDiagonal(matrizIdentidade, 3);
+        boolean passouIdentidade = true;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (resultadoIdentidade[i][j] != esperadoIdentidade[i][j]) {
+                    passouIdentidade = false;
+                    break;
+                }
+            }
+        }
+        if (passouIdentidade) {
+            System.out.println("getEigenvalueDiagonal passou no teste com matriz identidade.");
+        } else {
+            System.out.println("getEigenvalueDiagonal falhou no teste com matriz identidade.");
+        }
+    }
+
+    public static void testMultiplicarMatrizPorVetor() {
+        System.out.println("Testando multiplicarMatrizPorVetor...");
+
+        // Caso 1: Matriz 2x2 e vetor de tamanho 2
+        double[][] matriz2x2 = {
+                {1.0, 2.0},
+                {3.0, 4.0}
+        };
+        double[] vetor2 = {5.0, 6.0};
+        double[] esperado2x2 = {17.0, 39.0};
+        double[] resultado2x2 = Calculos.multiplicarMatrizPorVetor(matriz2x2, vetor2);
+        boolean passou2x2 = true;
+        for (int i = 0; i < esperado2x2.length; i++) {
+            if (resultado2x2[i] != esperado2x2[i]) {
+                passou2x2 = false;
+                break;
+            }
+        }
+        if (passou2x2) {
+            System.out.println("multiplicarMatrizPorVetor passou no teste com matriz 2x2 e vetor de tamanho 2.");
+        } else {
+            System.out.println("multiplicarMatrizPorVetor falhou no teste com matriz 2x2 e vetor de tamanho 2.");
+        }
+
+        // Caso 2: Matriz 3x3 e vetor de tamanho 3
+        double[][] matriz3x3 = {
+                {1.0, 0.0, 2.0},
+                {0.0, 1.0, 3.0},
+                {4.0, 5.0, 6.0}
+        };
+        double[] vetor3 = {1.0, 2.0, 3.0};
+        double[] esperado3x3 = {7.0, 11.0, 32.0};
+        double[] resultado3x3 = Calculos.multiplicarMatrizPorVetor(matriz3x3, vetor3);
+        boolean passou3x3 = true;
+        for (int i = 0; i < esperado3x3.length; i++) {
+            if (resultado3x3[i] != esperado3x3[i]) {
+                passou3x3 = false;
+                break;
+            }
+        }
+        if (passou3x3) {
+            System.out.println("multiplicarMatrizPorVetor passou no teste com matriz 3x3 e vetor de tamanho 3.");
+        } else {
+            System.out.println("multiplicarMatrizPorVetor falhou no teste com matriz 3x3 e vetor de tamanho 3.");
+        }
+
+        // Caso 3: Matriz 1x2 e vetor de tamanho 2
+        double[][] matriz1x2 = {
+                {7.0, 8.0}
+        };
+        double[] vetor1x2 = {9.0, 10.0};
+        double[] esperado1x2 = {151.0};
+        double[] resultado1x2 = Calculos.multiplicarMatrizPorVetor(matriz1x2, vetor1x2);
+        boolean passou1x2 = true;
+        for (int i = 0; i < esperado1x2.length; i++) {
+            if (resultado1x2[i] != esperado1x2[i]) {
+                passou1x2 = false;
+                break;
+            }
+        }
+        if (passou1x2) {
+            System.out.println("multiplicarMatrizPorVetor passou no teste com matriz 1x2 e vetor de tamanho 2.");
+        } else {
+            System.out.println("multiplicarMatrizPorVetor falhou no teste com matriz 1x2 e vetor de tamanho 2.");
+        }
+
+        // Caso 4: Exceção para matriz 2x2 e vetor de tamanho 3
+        double[][] matriz2x2Excecao = {
+                {1.0, 2.0},
+                {3.0, 4.0}
+        };
+        double[] vetorExcecao = {1.0, 2.0, 3.0};
+        try {
+            Calculos.multiplicarMatrizPorVetor(matriz2x2Excecao, vetorExcecao);
+            System.out.println("multiplicarMatrizPorVetor falhou no teste de exceção.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("multiplicarMatrizPorVetor passou no teste de exceção.");
+        }
+    }
+
+    public static void testCalcularPesos() {
+        System.out.println("Testando calcularPesos...");
+
+        // Caso 1: Matriz simples 2x2 com k = 1
+        double[][] A1 = {
+                {1.0, 2.0},
+                {3.0, 4.0}
+        };
+        double[][] eigenfaces1 = {
+                {0.5},
+                {0.5}
+        };
+        int k1 = 1;
+        double[][] esperado1 = {
+                {2.0, 3.0}
+        };
+        double[][] resultado1 = Calculos.calcularPesos(A1, eigenfaces1, k1);
+        boolean passou1 = true;
+        for (int i = 0; i < k1; i++) {
+            for (int j = 0; j < A1[0].length; j++) {
+                if (resultado1[i][j] != esperado1[i][j]) {
+                    passou1 = false;
+                    break;
+                }
+            }
+        }
+        if (passou1) {
+            System.out.println("calcularPesos passou no teste com matriz simples 2x2 e k=1.");
+        } else {
+            System.out.println("calcularPesos falhou no teste com matriz simples 2x2 e k=1.");
+        }
+
+        // Caso 2: Matriz 3x3 com k = 2
+        double[][] A2 = {
+                {1.0, 2.0, 3.0},
+                {4.0, 5.0, 6.0},
+                {7.0, 8.0, 9.0}
+        };
+        double[][] eigenfaces2 = {
+                {0.1, 0.2},
+                {0.3, 0.4},
+                {0.5, 0.6}
+        };
+        int k2 = 2;
+        double[][] esperado2 = {
+                {3.8, 4.6, 5.4},
+                {6.2, 7.4, 8.6}
+        };
+        double[][] resultado2 = Calculos.calcularPesos(A2, eigenfaces2, k2);
+        boolean passou2 = true;
+        for (int i = 0; i < k2; i++) {
+            for (int j = 0; j < A2[0].length; j++) {
+                if (resultado2[i][j] != esperado2[i][j]) {
+                    passou2 = false;
+                    break;
+                }
+            }
+        }
+        if (passou2) {
+            System.out.println("calcularPesos passou no teste com matriz 3x3 e k=2.");
+        } else {
+            System.out.println("calcularPesos falhou no teste com matriz 3x3 e k=2.");
+        }
+
+        // Caso 3: Matriz identidade com eigenfaces identidade
+        double[][] A3 = {
+                {1.0, 0.0, 0.0},
+                {0.0, 1.0, 0.0},
+                {0.0, 0.0, 1.0}
+        };
+        double[][] eigenfaces3 = {
+                {1.0, 0.0},
+                {0.0, 1.0},
+                {0.0, 0.0}
+        };
+        int k3 = 2;
+        double[][] esperado3 = {
+                {1.0, 0.0, 0.0},
+                {0.0, 1.0, 0.0}
+        };
+        double[][] resultado3 = Calculos.calcularPesos(A3, eigenfaces3, k3);
+        boolean passou3 = true;
+        for (int i = 0; i < k3; i++) {
+            for (int j = 0; j < A3[0].length; j++) {
+                if (resultado3[i][j] != esperado3[i][j]) {
+                    passou3 = false;
+                    break;
+                }
+            }
+        }
+        if (passou3) {
+            System.out.println("calcularPesos passou no teste com matriz identidade e eigenfaces identidade.");
+        } else {
+            System.out.println("calcularPesos falhou no teste com matriz identidade e eigenfaces identidade.");
+        }
+    }
+
+    public static void testReconstruirImagens() {
+        System.out.println("Testando reconstruirImagens...");
+
+        // Caso 1: Reconstruir uma única imagem
+        double[] media1 = {1.0, 2.0};
+        double[][] eigenfaces1 = {
+                {0.5, 0.3},
+                {0.4, 0.2}
+        };
+        double[][] pesos1 = {
+                {2.0},
+                {1.0}
+        };
+        int k1 = 2;
+        int coluna1 = 0;
+        double[][] esperado1 = {
+                {2.1},
+                {2.8}
+        };
+        double[][] resultado1 = Calculos.reconstruirImagens(media1, eigenfaces1, pesos1, k1, coluna1);
+        boolean passou1 = true;
+        for (int i = 0; i < media1.length; i++) {
+            if (resultado1[i][0] != esperado1[i][0]) {
+                passou1 = false;
+                break;
+            }
+        }
+        if (passou1) {
+            System.out.println("reconstruirImagens passou no teste de reconstrução de uma única imagem.");
+        } else {
+            System.out.println("reconstruirImagens falhou no teste de reconstrução de uma única imagem.");
+        }
+
+        // Caso 2: Reconstruir todas as imagens
+        double[] media2 = {1.0, 2.0, 3.0};
+        double[][] eigenfaces2 = {
+                {0.5, 0.1},
+                {0.4, 0.2},
+                {0.3, 0.3}
+        };
+        double[][] pesos2 = {
+                {2.0, 3.0},
+                {1.0, 4.0}
+        };
+        int k2 = 2;
+        int coluna2 = -1;
+        double[][] esperado2 = {
+                {2.1, 2.8},
+                {2.8, 4.2},
+                {4.1, 6.2}
+        };
+        double[][] resultado2 = Calculos.reconstruirImagens(media2, eigenfaces2, pesos2, k2, coluna2);
+        boolean passou2 = true;
+        for (int i = 0; i < media2.length; i++) {
+            for (int j = 0; j < pesos2[0].length; j++) {
+                if (resultado2[i][j] != esperado2[i][j]) {
+                    passou2 = false;
+                    break;
+                }
+            }
+        }
+        if (passou2) {
+            System.out.println("reconstruirImagens passou no teste de reconstrução de todas as imagens.");
+        } else {
+            System.out.println("reconstruirImagens falhou no teste de reconstrução de todas as imagens.");
+        }
+    }
+
+    public static void testCalcularDistanciaEuclidiana() {
+        System.out.println("Testando calcularDistanciaEuclidiana...");
+
+        // Caso 1: Base simples com 2 vetores, vetor omegaNova também 2D
+        double[] omegaNova1 = {1.0, 2.0};
+        double[][] omegaBase1 = {
+                {1.0, 3.0},
+                {2.0, 4.0}
+        };
+        double[] esperado1 = {0.0, Math.sqrt(8.0)};
+        double[] resultado1 = Calculos.calcularDistanciaEuclidiana(omegaNova1, omegaBase1);
+        boolean passou1 = true;
+        for (int i = 0; i < esperado1.length; i++) {
+            if (Math.abs(resultado1[i] - esperado1[i]) > 1e-6) { // Comparação com tolerância
+                passou1 = false;
+                break;
+            }
+        }
+        if (passou1) {
+            System.out.println("calcularDistanciaEuclidiana passou no teste com base simples 2D.");
+        } else {
+            System.out.println("calcularDistanciaEuclidiana falhou no teste com base simples 2D.");
+        }
+
+        // Caso 2: Base 3D com 3 vetores, vetor omegaNova 3D
+        double[] omegaNova2 = {2.0, 3.0, 4.0};
+        double[][] omegaBase2 = {
+                {1.0, 3.0, 5.0},
+                {2.0, 4.0, 6.0},
+                {3.0, 5.0, 7.0}
+        };
+        double[] esperado2 = {Math.sqrt(3.0), Math.sqrt(3.0), Math.sqrt(27.0)};
+        double[] resultado2 = Calculos.calcularDistanciaEuclidiana(omegaNova2, omegaBase2);
+        boolean passou2 = true;
+        for (int i = 0; i < esperado2.length; i++) {
+            if (Math.abs(resultado2[i] - esperado2[i]) > 1e-6) { // Comparação com tolerância
+                passou2 = false;
+                break;
+            }
+        }
+        if (passou2) {
+            System.out.println("calcularDistanciaEuclidiana passou no teste com base 3D.");
+        } else {
+            System.out.println("calcularDistanciaEuclidiana falhou no teste com base 3D.");
+        }
+
+        // Caso 3: OmegaNova idêntico a um vetor na base
+        double[] omegaNova3 = {0.0, 0.0, 0.0};
+        double[][] omegaBase3 = {
+                {0.0, 1.0, 2.0},
+                {0.0, 2.0, 3.0},
+                {0.0, 3.0, 4.0}
+        };
+        double[] esperado3 = {0.0, Math.sqrt(14.0), Math.sqrt(29.0)};
+        double[] resultado3 = Calculos.calcularDistanciaEuclidiana(omegaNova3, omegaBase3);
+        boolean passou3 = true;
+        for (int i = 0; i < esperado3.length; i++) {
+            if (Math.abs(resultado3[i] - esperado3[i]) > 1e-6) { // Comparação com tolerância
+                passou3 = false;
+                break;
+            }
+        }
+        if (passou3) {
+            System.out.println("calcularDistanciaEuclidiana passou no teste com vetor omegaNova idêntico a um vetor na base.");
+        } else {
+            System.out.println("calcularDistanciaEuclidiana falhou no teste com vetor omegaNova idêntico a um vetor na base.");
+        }
+    }
 }
 
 
