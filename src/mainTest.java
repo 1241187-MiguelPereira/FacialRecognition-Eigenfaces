@@ -25,6 +25,8 @@ public class mainTest {
         testConverterMatrizParaVetor();
         testEscreverArraycomoImagem();
         testArrayparaMatriz();
+        testVerificarValoresProprios();
+
 
 
     }
@@ -1026,6 +1028,59 @@ public class mainTest {
             System.out.println("arrayparaMatriz falhou no teste devido a uma exceção inesperada: " + e.getMessage());
         }
     }
+
+    //VALIDACOES
+
+    public static void testVerificarValoresProprios() {
+        System.out.println("Testando verificarValoresProprios...");
+
+        try {
+            // Teste com k dentro do intervalo permitido
+            int cols = 5, k1 = 3;
+            int resultadoEsperado1 = 3;
+            int resultado1 = Validacoes.verificarValoresProprios(cols, k1);
+            if (resultado1 == resultadoEsperado1) {
+                System.out.println("verificarValoresProprios passou no teste com k dentro do intervalo permitido.");
+            } else {
+                System.out.println("verificarValoresProprios falhou no teste com k dentro do intervalo permitido.");
+            }
+
+            // Teste com k maior que cols
+            int k2 = 6;
+            int resultadoEsperado2 = cols;
+            int resultado2 = Validacoes.verificarValoresProprios(cols, k2);
+            if (resultado2 == resultadoEsperado2) {
+                System.out.println("verificarValoresProprios passou no teste com k maior que cols.");
+            } else {
+                System.out.println("verificarValoresProprios falhou no teste com k maior que cols.");
+            }
+
+            // Teste com k igual a 0
+            int k3 = 0;
+            int resultadoEsperado3 = cols;
+            int resultado3 = Validacoes.verificarValoresProprios(cols, k3);
+            if (resultado3 == resultadoEsperado3) {
+                System.out.println("verificarValoresProprios passou no teste com k igual a 0.");
+            } else {
+                System.out.println("verificarValoresProprios falhou no teste com k igual a 0.");
+            }
+
+            // Teste com k negativo
+            int k4 = -2;
+            int resultadoEsperado4 = cols;
+            int resultado4 = Validacoes.verificarValoresProprios(cols, k4);
+            if (resultado4 == resultadoEsperado4) {
+                System.out.println("verificarValoresProprios passou no teste com k negativo.");
+            } else {
+                System.out.println("verificarValoresProprios falhou no teste com k negativo.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("verificarValoresProprios falhou no teste devido a uma exceção inesperada: " + e.getMessage());
+        }
+    }
+
+
 
 }
 
