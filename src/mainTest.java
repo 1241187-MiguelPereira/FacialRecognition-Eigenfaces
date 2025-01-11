@@ -23,6 +23,8 @@ public class mainTest {
         testReconstruirImagens();
         testCalcularDistanciaEuclidiana();
         testConverterMatrizParaVetor();
+        testEscreverArraycomoImagem();
+
     }
 
     public static void testIsSymmetric() {
@@ -922,6 +924,51 @@ public class mainTest {
             System.out.println("converterMatrizParaVetor passou no teste com matriz vazia.");
         } else {
             System.out.println("converterMatrizParaVetor falhou no teste com matriz vazia.");
+        }
+    }
+
+    public static void testEscreverArraycomoImagem() {
+        System.out.println("Testando escreverArraycomoImagem...");
+
+        try {
+            // Teste com uma matriz válida
+            double[][] matrizValida = {
+                    {0, 128, 255},
+                    {64, 192, 128},
+                    {255, 0, 64}
+            };
+
+            String caminhoOutput = "testeImagemValida.jpg";
+            Conversoes.escreverArraycomoImagem(matrizValida, caminhoOutput);
+
+            File arquivo = new File(caminhoOutput);
+            if (arquivo.exists() && arquivo.length() > 0) {
+                System.out.println("escreverArraycomoImagem passou no teste com matriz válida.");
+            } else {
+                System.out.println("escreverArraycomoImagem falhou no teste com matriz válida (arquivo não criado ou vazio).");
+            }
+
+            // Limpar arquivo gerado
+            if (arquivo.exists()) {
+                arquivo.delete();
+            }
+
+            // Teste com valores fora do intervalo permitido (0-255)
+            double[][] matrizInvalida = {
+                    {0, 300, -10},
+                    {64, 192, 128},
+                    {255, 0, 64}
+            };
+
+            try {
+                Conversoes.escreverArraycomoImagem(matrizInvalida, "testeImagemInvalida.jpg");
+                System.out.println("escreverArraycomoImagem falhou no teste com matriz inválida (não lançou exceção).");
+            } catch (IllegalArgumentException e) {
+                System.out.println("escreverArraycomoImagem passou no teste com matriz inválida (exceção lançada corretamente).");
+            }
+
+        } catch (Exception e) {
+            System.out.println("escreverArraycomoImagem falhou no teste devido a uma exceção inesperada: " + e.getMessage());
         }
     }
 
