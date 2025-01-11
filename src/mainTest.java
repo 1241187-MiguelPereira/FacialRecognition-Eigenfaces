@@ -27,6 +27,8 @@ public class mainTest {
         testArrayparaMatriz();
         testVerificarValoresProprios();
         testIndicedoMenor();
+        testFindMin();
+
 
 
 
@@ -1132,6 +1134,55 @@ public class mainTest {
 
         } catch (Exception e) {
             System.out.println("IndicedoMenor falhou no teste devido a uma exceção inesperada: " + e.getMessage());
+        }
+    }
+
+    public static void testFindMin() {
+        System.out.println("Testando findMin...");
+
+        try {
+            // Teste com valores positivos
+            double[] array1 = {10.5, 3.2, 7.8, 5.6};
+            double resultadoEsperado1 = 3.2;
+            double resultado1 = Validacoes.findMin(array1);
+            if (Math.abs(resultado1 - resultadoEsperado1) < 0.001) {
+                System.out.println("findMin passou no teste com valores positivos.");
+            } else {
+                System.out.println("findMin falhou no teste com valores positivos.");
+            }
+
+            // Teste com valores negativos
+            double[] array2 = {-1.0, -3.5, -2.2, -4.8};
+            double resultadoEsperado2 = -4.8;
+            double resultado2 = Validacoes.findMin(array2);
+            if (Math.abs(resultado2 - resultadoEsperado2) < 0.001) {
+                System.out.println("findMin passou no teste com valores negativos.");
+            } else {
+                System.out.println("findMin falhou no teste com valores negativos.");
+            }
+
+            // Teste com valores mistos
+            double[] array3 = {-1.0, 0.0, 2.3, -0.5};
+            double resultadoEsperado3 = -1.0;
+            double resultado3 = Validacoes.findMin(array3);
+            if (Math.abs(resultado3 - resultadoEsperado3) < 0.001) {
+                System.out.println("findMin passou no teste com valores mistos.");
+            } else {
+                System.out.println("findMin falhou no teste com valores mistos.");
+            }
+
+            // Teste com um único valor
+            double[] array4 = {7.5};
+            double resultadoEsperado4 = 7.5;
+            double resultado4 = Validacoes.findMin(array4);
+            if (Math.abs(resultado4 - resultadoEsperado4) < 0.001) {
+                System.out.println("findMin passou no teste com um único valor.");
+            } else {
+                System.out.println("findMin falhou no teste com um único valor.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("findMin falhou no teste devido a uma exceção inesperada: " + e.getMessage());
         }
     }
 
