@@ -1,4 +1,5 @@
 import org.apache.commons.math3.linear.*;
+import java.io.File;
 
 public class mainTest {
     public static void main(String[] args) {
@@ -21,6 +22,7 @@ public class mainTest {
         testCalcularPesos();
         testReconstruirImagens();
         testCalcularDistanciaEuclidiana();
+        testConverterMatrizParaVetor();
     }
 
     public static void testIsSymmetric() {
@@ -872,6 +874,57 @@ public class mainTest {
             System.out.println("calcularDistanciaEuclidiana falhou no teste com vetor omegaNova idêntico a um vetor na base.");
         }
     }
+
+    // CONVERSOES
+
+    public static void testConverterMatrizParaVetor() {
+        System.out.println("Testando converterMatrizParaVetor...");
+
+        // Teste com uma matriz válida
+        double[][] matrizValida = {
+                {1.0, 2.0, 3.0},
+                {4.0, 5.0, 6.0}
+        };
+
+        double[] vetorEsperado = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+        double[] vetorResultado = Conversoes.converterMatrizParaVetor(matrizValida);
+
+        if (vetorResultado != null && vetorResultado.length == vetorEsperado.length) {
+            boolean passou = true;
+            for (int i = 0; i < vetorEsperado.length; i++) {
+                if (Math.abs(vetorResultado[i] - vetorEsperado[i]) > 0.001) {
+                    passou = false;
+                    break;
+                }
+            }
+
+            if (passou) {
+                System.out.println("converterMatrizParaVetor passou no teste com matriz válida.");
+            } else {
+                System.out.println("converterMatrizParaVetor falhou no teste com matriz válida.");
+            }
+        } else {
+            System.out.println("converterMatrizParaVetor falhou no teste com matriz válida (vetor nulo ou tamanho incorreto).");
+        }
+
+        // Teste com matriz nula
+        double[] resultadoMatrizNula = Conversoes.converterMatrizParaVetor(null);
+        if (resultadoMatrizNula == null) {
+            System.out.println("converterMatrizParaVetor passou no teste com matriz nula.");
+        } else {
+            System.out.println("converterMatrizParaVetor falhou no teste com matriz nula.");
+        }
+
+        // Teste com matriz vazia
+        double[][] matrizVazia = new double[0][0];
+        double[] resultadoMatrizVazia = Conversoes.converterMatrizParaVetor(matrizVazia);
+        if (resultadoMatrizVazia == null) {
+            System.out.println("converterMatrizParaVetor passou no teste com matriz vazia.");
+        } else {
+            System.out.println("converterMatrizParaVetor falhou no teste com matriz vazia.");
+        }
+    }
+
 }
 
 
