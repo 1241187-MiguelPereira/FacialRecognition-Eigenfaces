@@ -29,11 +29,7 @@ public class mainTest {
         testIndicedoMenor();
         testFindMin();
         testFindMax();
-
-
-
-
-
+        testCompararMatrizes();
 
     }
 
@@ -1234,6 +1230,73 @@ public class mainTest {
 
         } catch (Exception e) {
             System.out.println("findMax falhou no teste devido a uma exceção inesperada: " + e.getMessage());
+        }
+    }
+
+    public static void testCompararMatrizes() {
+        System.out.println("Testando compararMatrizes...");
+
+        try {
+            // Teste com matrizes idênticas
+            double[][] matriz1 = {
+                    {1.0, 2.0, 3.0},
+                    {4.0, 5.0, 6.0},
+                    {7.0, 8.0, 9.0}
+            };
+
+            double[][] matriz2 = {
+                    {1.0, 2.0, 3.0},
+                    {4.0, 5.0, 6.0},
+                    {7.0, 8.0, 9.0}
+            };
+
+            int[] resultadoEsperado = {};
+            int[] resultado = Validacoes.compararMatrizes(matriz1, matriz2);
+
+            if (resultado.length == resultadoEsperado.length) {
+                System.out.println("compararMatrizes passou no teste com matrizes idênticas.");
+            } else {
+                System.out.println("compararMatrizes falhou no teste com matrizes idênticas.");
+            }
+
+            // Teste com matrizes parcialmente diferentes
+            double[][] matriz3 = {
+                    {1.0, 2.0, 3.0},
+                    {4.0, 0.0, 6.0}, // Diferença na coluna 1
+                    {7.0, 8.0, 0.0}  // Diferença na coluna 2
+            };
+
+            int[] resultadoEsperado2 = {1, 2};
+            int[] resultado2 = Validacoes.compararMatrizes(matriz1, matriz3);
+
+            boolean passou2 = resultado2.length == resultadoEsperado2.length;
+            for (int i = 0; i < resultado2.length && passou2; i++) {
+                if (resultado2[i] != resultadoEsperado2[i]) {
+                    passou2 = false;
+                }
+            }
+
+            if (passou2) {
+                System.out.println("compararMatrizes passou no teste com matrizes parcialmente diferentes.");
+            } else {
+                System.out.println("compararMatrizes falhou no teste com matrizes parcialmente diferentes.");
+            }
+
+            // Teste com matrizes de dimensões incompatíveis
+            double[][] matriz4 = {
+                    {1.0, 2.0},
+                    {3.0, 4.0}
+            };
+
+            try {
+                Validacoes.compararMatrizes(matriz1, matriz4);
+                System.out.println("compararMatrizes falhou no teste com matrizes de dimensões incompatíveis (não lançou exceção).");
+            } catch (IllegalArgumentException e) {
+                System.out.println("compararMatrizes passou no teste com matrizes de dimensões incompatíveis (exceção lançada corretamente).");
+            }
+
+        } catch (Exception e) {
+            System.out.println("compararMatrizes falhou no teste devido a uma exceção inesperada: " + e.getMessage());
         }
     }
 
