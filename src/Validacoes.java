@@ -55,7 +55,7 @@ public class Validacoes {
         return min;
     }
     public static double findMax(double[] array) {
-        double max = Double.MIN_VALUE;
+        double max = -Double.MAX_VALUE;
         for (double val : array) {
             if (val > max) {
                 max = val;
