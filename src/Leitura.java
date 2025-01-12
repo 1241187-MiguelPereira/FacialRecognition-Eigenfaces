@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Leitura {
-      public static double[][] lerMatriz(String filePath) {
+      public static double[][] lerMatriz(String filePath, boolean Simetria) {
             try {
                   // First pass to determine matrix dimensions
                   Scanner scanner = new Scanner(new File(filePath));
@@ -34,7 +34,10 @@ public class Leitura {
                         }
                   }
                   scanner.close();
-
+                  if(!Validacoes.verificarMatriz(matriz,Simetria)){
+                              System.out.println("Erro: A matriz não é válida. O programa será encerrado.");
+                              System.exit(1); // Encerra o programa
+                  }
                   return matriz;
             } catch (FileNotFoundException e) {
                   System.out.println("Error: File not found.");
@@ -42,7 +45,7 @@ public class Leitura {
             }
       }
 
-      public static double[][] construirMatrizDeImagens(String pasta) {
+      public static double[][] construirMatrizDeImagens(String pasta,boolean Simetria) {
             File folder = new File(pasta);
             File[] arquivos = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
 
@@ -59,7 +62,7 @@ public class Leitura {
             for (int i = 0; i < quantidadeDeImagens; i++) {
                   File arquivo = arquivos[i];
                   System.out.println("Lendo imagem: " + arquivo.getName());
-                  double[][] matriz = Leitura.lerMatriz(arquivo.getAbsolutePath());
+                  double[][] matriz = Leitura.lerMatriz(arquivo.getAbsolutePath(),Simetria);
 
                   if (matriz == null) {
                         System.out.println("Erro ao ler a matriz do arquivo: " + arquivo.getName());

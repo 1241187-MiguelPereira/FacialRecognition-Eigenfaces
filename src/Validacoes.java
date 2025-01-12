@@ -1,17 +1,42 @@
 public class Validacoes {
-    public static boolean isSymmetric(double[][] matrix, int rows, int cols) {
-        if (rows != cols) {
+    public static boolean verificarMatriz(double[][] matriz, boolean exigirSimetria) {
+        // Tem que ser uma matriz quadrada
+        if (matriz.length == 0 || matriz.length != matriz[0].length) {
             return false;
         }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (matrix[i][j] != matrix[j][i]) {
+        // Tem que ter o número de linhas menor que 256
+        if (matriz.length >= 256) {
+            return false;
+        }
+
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                // Tem que ser um número real
+                if (Double.isNaN(matriz[i][j]) || Double.isInfinite(matriz[i][j])) {
+                    return false;
+                }
+
+                // Verificar simetria apenas se exigido
+                if (exigirSimetria && matriz[i][j] != matriz[j][i]) {
                     return false;
                 }
             }
         }
 
+        // Pode ter linhas em branco no final de cada matriz
+        for (int i = matriz.length - 1; i >= 0; i--) {
+            boolean linhaEmBranco = true;
+            for (int j = 0; j < matriz[i].length; j++) {
+                if (matriz[i][j] != 0) {
+                    linhaEmBranco = false;
+                    break;
+                }
+            }
+            if (!linhaEmBranco) {
+                break;
+            }
+        }
         return true;
     }
 
@@ -27,9 +52,9 @@ public class Validacoes {
         int menorIndice = 0;
         boolean menorIgual = false;
 
-        for(int i = 1; i < distancias.length; i++) {
-            if(distancias[i] <= menorValor) {
-                if(distancias[i] == menorValor) {
+        for (int i = 1; i < distancias.length; i++) {
+            if (distancias[i] <= menorValor) {
+                if (distancias[i] == menorValor) {
                     menorIgual = true;
                 } else {
                     menorIgual = false;
@@ -39,12 +64,13 @@ public class Validacoes {
             }
         }
 
-        if(menorIgual) {
+        if (menorIgual) {
             return -1;
         } else {
             return menorIndice;
         }
     }
+
     public static double findMin(double[] array) {
         double min = Double.MAX_VALUE;
         for (double val : array) {
@@ -54,6 +80,7 @@ public class Validacoes {
         }
         return min;
     }
+
     public static double findMax(double[] array) {
         double max = -Double.MAX_VALUE;
         for (double val : array) {
@@ -62,7 +89,9 @@ public class Validacoes {
             }
         }
         return max;
-    }public static int[] compararMatrizes(double[][] matriz1, double[][] matriz2) {
+    }
+
+    public static int[] compararMatrizes(double[][] matriz1, double[][] matriz2) {
         // Verificar se as matrizes têm dimensões compatíveis
         if (matriz1.length != matriz2.length || matriz1[0].length != matriz2[0].length) {
             throw new IllegalArgumentException("As matrizes devem ter as mesmas dimensões.");
@@ -101,6 +130,7 @@ public class Validacoes {
 
         return resultado; // Retornar os índices das colunas diferentes
     }
+
     // Método auxiliar para verificar se um índice está no array de índices
     public static boolean contemIndice(int[] indices, int coluna) {
         for (int indice : indices) {

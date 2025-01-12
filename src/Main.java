@@ -147,7 +147,7 @@ public class Main {
 
 
         // Ler a matriz do ficheiro
-        double[][] matriz = Leitura.lerMatriz(filePath);
+        double[][] matriz = Leitura.lerMatriz(filePath,true);
         if (matriz == null) {
             System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
 
@@ -158,11 +158,6 @@ public class Main {
         int colunas = matriz[0].length;
         int linhas = matriz.length;
 
-        // Verificar se é simétrica; prosseguir somente se for simétrica
-        while (!Validacoes.isSymmetric(matriz, colunas, linhas)) {
-            System.out.println("A matriz inserida é inválida. Tente novamente.");
-            matriz = Leitura.lerMatriz(filePath); // Solicitar novamente a matriz
-        }
 
         // Atualizar o k
         k = Validacoes.verificarValoresProprios(colunas, k);
@@ -206,7 +201,7 @@ public class Main {
 
 
         //criação da matrizDeImagens a partir do CSV
-        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
+        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens,false);
         int colunas = matrizImagens[0].length;
 
         if (matrizImagens == null) {
@@ -230,6 +225,9 @@ public class Main {
 
         double[][] matrizA = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
         double[][] matrizCov = Calculos.MatrizdasCovarianciasTeorema(matrizA);
+        System.out.println();
+        System.out.println("Matriz A^T.A:");
+        Escrita.imprimirMatriz(matrizCov);
 
         RealMatrix matrizCovReal = new Array2DRowRealMatrix(matrizCov);
         double[][] matrizVetores = Calculos.MatrizColunaDosVetoresProprios(matrizCovReal, x);
@@ -264,12 +262,12 @@ public class Main {
     public static void funcionalidade3(int k, String pastaImagens, String filePath) {
 
 
-        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
+        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens,false);
         int colunas = matrizImagens[0].length;
 
 
         // Ler a matriz do ficheiro
-        double[][] ImagemAlvo = Leitura.lerMatriz(filePath);
+        double[][] ImagemAlvo = Leitura.lerMatriz(filePath,false);
         if (ImagemAlvo == null) {
             System.out.println("Erro: Matriz não pôde ser carregada. Verifique o arquivo e tente novamente.");
         }
@@ -282,7 +280,7 @@ public class Main {
 
         if (matrizImagens != null) {
             System.out.println("Matriz de imagens construída com sucesso:");
-            //imprimirMatriz(matrizImagens);
+
         } else {
             System.out.println("Erro ao construir a matriz de imagens. Verifique a pasta de imagens.");
         }
@@ -303,30 +301,32 @@ public class Main {
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
         //UI.imprimirMatriz(normalizados);
         double[][] matrizpesos = Calculos.calcularPesos(matrizA, normalizados, x);
+        System.out.println("Matriz Pesos:");
         Escrita.ImprimirPesos(matrizpesos, x);
 
 
         double[] vetorAlvo = Conversoes.converterMatrizParaVetor(ImagemAlvo);
+        System.out.println("Vetor Ω Nova:");
+        Escrita.ImprimirVetor(vetorAlvo);
         double[] vetorCentralizado = Calculos.CalculoDoDesvio(vetorMedias, vetorAlvo);
         double[] vetorPesosAlvo = Calculos.calcularPesosImagemAlvo(vetorCentralizado, normalizados, x);
         double[] VetorDasDistanciasEuclidianas = Calculos.calcularDistanciaEuclidiana(vetorPesosAlvo, matrizpesos);
         Escrita.ImprimirDistancias(VetorDasDistanciasEuclidianas);
         int indice = Validacoes.IndicedoMenor(VetorDasDistanciasEuclidianas);
-        double[][] ImagemMaisParecida = Calculos.RemoverImagemDeUmaMatriz(matrizImagens, indice);
+
         if (indice == -1) {
             System.out.print("Ocorreu um empate entre duas ou mais imagens da identificação");
             Escrita.guardarImagem(matrizImagens, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
-        } else
-            System.out.println("A imagem mais parecida na base de imagens fornecida é:");
-        int numeroAssociadoImagem = (indice * 10) + 1;
-        System.out.println("image_" + numeroAssociadoImagem + ".png");
-        Escrita.guardarImagem(ImagemMaisParecida, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
+        } else {
+            double[][] ImagemMaisParecida = Calculos.RemoverImagemDeUmaMatriz(matrizImagens, indice);
+            Escrita.guardarImagem(ImagemMaisParecida, "src/outputs/Funcionalidade3/Identificação", "ImagemParecida");
+        }
     }
 
     public static void funcionalidade4(String pastaImagens, int k) {
 
         //criação da matrizDeImagens a partir do CSV
-        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens);
+        double[][] matrizImagens = Leitura.construirMatrizDeImagens(pastaImagens,false);
         int colunas = matrizImagens[0].length;
 
         if (matrizImagens == null) {
@@ -353,7 +353,6 @@ public class Main {
         double[][] matrizVetoresC = Calculos.calcularEigenfaces(matrizA, matrizVetores);
         double[][] normalizados = Calculos.normalizeEigenfaces(matrizVetoresC);
         double[][] valoresproprios = Calculos.getEigenvalueDiagonal(matrizCovReal, x);
-        Escrita.imprimirMatriz(valoresproprios);
         double[][] imagemGerada = Calculos.gerarImagem(vetorMedias, valoresproprios, normalizados, x);
         double[][] imagemRescalonada = Calculos.reescalonarEigenfaces(imagemGerada);
         Escrita.guardarImagem(imagemRescalonada, "src/outputs/Funcionalidade4/ImagemGerada", "ImagemGerada");

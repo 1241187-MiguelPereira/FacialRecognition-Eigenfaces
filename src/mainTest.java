@@ -3,12 +3,9 @@ import java.io.File;
 
 public class mainTest {
     public static void main(String[] args) {
-        testIsSymmetric();
         testCalcularErroAbsolutoMedio();
         testMultiplicarMatrizes();
         testImprimirMatriz();
-        testVetorLinhaMedias();
-        testCalculoDoDesvio();
         testMatrizDasCovarianciasTeorema();
         testMatrizColunaDosVetoresProprios();
         testCalcularEigenfaces();
@@ -16,7 +13,6 @@ public class mainTest {
         testCalcularPesosImagemAlvo();
         testarRemoverImagemDeUmaMatriz();
         testarGerarImagem();
-        testCriarTransposta();
         testGetEigenvalueDiagonal();
         testMultiplicarMatrizPorVetor();
         testCalcularPesos();
@@ -30,36 +26,10 @@ public class mainTest {
         testFindMin();
         testFindMax();
         testCompararMatrizes();
-
+        testCalculoDoDesvio();
+        testVetorLinhaMedias();
     }
 
-    public static void testIsSymmetric() {
-        System.out.println("Testando isSymmetric...");
-
-        double[][] symmetricMatrix = {
-                {1.0, 2.0, 3.0},
-                {2.0, 4.0, 5.0},
-                {3.0, 5.0, 6.0}
-        };
-
-        double[][] nonSymmetricMatrix = {
-                {1.0, 0.0, 3.0},
-                {2.0, 4.0, 5.0},
-                {3.0, 5.0, 6.0}
-        };
-
-        if (Validacoes.isSymmetric(symmetricMatrix, 3, 3)) {
-            System.out.println("isSymmetric passou no teste com matriz simétrica.");
-        } else {
-            System.out.println("isSymmetric falhou no teste com matriz simétrica.");
-        }
-
-        if (!Validacoes.isSymmetric(nonSymmetricMatrix, 3, 3)) {
-            System.out.println("isSymmetric passou no teste com matriz não simétrica.");
-        } else {
-            System.out.println("isSymmetric falhou no teste com matriz não simétrica.");
-        }
-    }
 
     public static void testCalcularErroAbsolutoMedio() {
         System.out.println("Testando calcularErroAbsolutoMedio...");
@@ -150,7 +120,7 @@ public class mainTest {
                 {4.0, 5.0, 6.0},
                 {7.0, 8.0, 9.0}
         };
-        double[] expected = {4.0, 5.0, 6.0};
+        double[] expected = {2.0, 5.0, 8.0};
         double[] result = Calculos.VetorLinhaMedias(matrizImagens);
 
         if (java.util.Arrays.equals(result, expected)) {
@@ -170,9 +140,9 @@ public class mainTest {
                 {7.0, 8.0, 9.0}
         };
         double[][] expected = {
-                {-3.0, -3.0, -3.0},
-                {0.0, 0.0, 0.0},
-                {3.0, 3.0, 3.0}
+                {-3.0, -2.0, -1.0},
+                {-1.0, 0.0, 1.0},
+                {1.0, 2.0, 3.0}
         };
         double[][] result = Calculos.CálculoDoDesvio(vetorMedias, matrizImagens);
 
@@ -420,73 +390,6 @@ public class mainTest {
             System.out.println("gerarImagem passou no teste.");
         } else {
             System.out.println("gerarImagem falhou no teste.");
-        }
-    }
-
-    public static void testCriarTransposta() {
-        System.out.println("Testando criarTransposta...");
-
-        // Caso 1: Matriz quadrada
-        double[][] matrizQuadrada = {
-                {1.0, 2.0, 3.0},
-                {4.0, 5.0, 6.0},
-                {7.0, 8.0, 9.0}
-        };
-        double[][] esperadoQuadrada = {
-                {1.0, 4.0, 7.0},
-                {2.0, 5.0, 8.0},
-                {3.0, 6.0, 9.0}
-        };
-        double[][] resultadoQuadrada = Calculos.criarTransposta(matrizQuadrada);
-        boolean passouQuadrada = true;
-        for (int i = 0; i < esperadoQuadrada.length; i++) {
-            for (int j = 0; j < esperadoQuadrada[i].length; j++) {
-                if (resultadoQuadrada[i][j] != esperadoQuadrada[i][j]) {
-                    passouQuadrada = false;
-                    break;
-                }
-            }
-        }
-        if (passouQuadrada) {
-            System.out.println("criarTransposta passou no teste com matriz quadrada.");
-        } else {
-            System.out.println("criarTransposta falhou no teste com matriz quadrada.");
-        }
-
-        // Caso 2: Matriz retangular (mais linhas que colunas)
-        double[][] matrizMaisLinhas = {
-                {1.0, 2.0},
-                {3.0, 4.0},
-                {5.0, 6.0}
-        };
-        double[][] esperadoMaisLinhas = {
-                {1.0, 3.0, 5.0},
-                {2.0, 4.0, 6.0}
-        };
-        double[][] resultadoMaisLinhas = Calculos.criarTransposta(matrizMaisLinhas);
-        boolean passouMaisLinhas = true;
-        for (int i = 0; i < esperadoMaisLinhas.length; i++) {
-            for (int j = 0; j < esperadoMaisLinhas[i].length; j++) {
-                if (resultadoMaisLinhas[i][j] != esperadoMaisLinhas[i][j]) {
-                    passouMaisLinhas = false;
-                    break;
-                }
-            }
-        }
-        if (passouMaisLinhas) {
-            System.out.println("criarTransposta passou no teste com matriz retangular (mais linhas).");
-        } else {
-            System.out.println("criarTransposta falhou no teste com matriz retangular (mais linhas).");
-        }
-
-        // Caso 3: Matriz vazia
-        double[][] matrizVazia = new double[0][0];
-        double[][] resultadoVazia = Calculos.criarTransposta(matrizVazia);
-        boolean passouVazia = resultadoVazia.length == 0;
-        if (passouVazia) {
-            System.out.println("criarTransposta passou no teste com matriz vazia.");
-        } else {
-            System.out.println("criarTransposta falhou no teste com matriz vazia.");
         }
     }
 

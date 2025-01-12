@@ -117,7 +117,7 @@ public class Escrita {
                     try (PrintWriter printwriter = new PrintWriter(caminhoCSV)) {
                         for (int i = 0; i < dimensaoImagem; i++) {
                             for (int j = 0; j < dimensaoImagem; j++) {
-                                printwriter.printf("%.2f", inputCSV[i * dimensaoImagem + j][coluna]);
+                                printwriter.printf("%.0f", inputCSV[i * dimensaoImagem + j][coluna]);
                                 if (j == dimensaoImagem - 1) {
                                     printwriter.println(); // Fim da linha
                                 } else {
@@ -134,12 +134,7 @@ public class Escrita {
     }
 
 
-    public static void ImprimirVetorInt(int[] vetor) {
-        for (int j : vetor) {
-            System.out.print(vetor[j]);
-            System.out.print(" ");
-        }
-    }
+
 
     public static void imprimirMatriz(double[][] matrix) {
         for (double[] row : matrix) {
